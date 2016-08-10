@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -103,41 +105,26 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void onLoginBtnClicked(View v) {
-        Toast.makeText(this, "LoginBtnClicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void onRegisterBtnClicked(View v) {
-        EditText ed_id = (EditText)findViewById(R.id.ed_id);
-        EditText ed_pwd = (EditText)findViewById(R.id.ed_pwd);
-
-        if("".equals(ed_id.getText().toString()) || "".equals(ed_pwd.getText().toString())) {
-            Toast.makeText(this, "가입을 원하는 ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-        } else {
-
-        }
-    }
-
-    // ID 중복 체크
-    private boolean checkID(String input_id) {
-        String address = "http://mascorewebserver.hol.es";
-        String fileName = "InsertUser.php";
-        String username="ABCDcd";
-        String password="a1b1";
-
-        String deviceName= Build.DEVICE;
-        String version=String.valueOf(android.os.Build.VERSION.SDK_INT);
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("fileName", fileName);
-        map.put("UserName", username);
-        map.put("Password", password);
-        map.put("version", version);
-        map.put("model", deviceName);
-
-        HttpRequest httpRequest = new HttpRequest();
-        String requestAddress = httpRequest.makeUrl(address, map);
-        httpRequest.getRequest(requestAddress);
-        return true;
-    }
+    // ID 중복 체크(현재 구현 X)
+//    private boolean checkID(String input_id) {
+//        String address = "http://mascorewebserver.hol.es";
+//        String fileName = "InsertUser.php";
+//        String username="ABCDcd";
+//        String password="a1b1";
+//
+//        String deviceName= Build.DEVICE;
+//        String version=String.valueOf(android.os.Build.VERSION.SDK_INT);
+//
+//        Map<String, String> map = new HashMap<String, String>();
+//        map.put("fileName", fileName);
+//        map.put("UserName", username);
+//        map.put("Password", password);
+//        map.put("version", version);
+//        map.put("model", deviceName);
+//
+//        HttpRequest httpRequest = new HttpRequest();
+//        String requestAddress = httpRequest.makeUrl(address, map);
+//        httpRequest.getRequest(requestAddress);
+//        return true;
+//    }
 }
