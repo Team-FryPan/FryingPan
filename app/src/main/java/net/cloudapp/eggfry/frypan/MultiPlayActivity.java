@@ -5,18 +5,43 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
+import android.support.annotation.IntegerRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 public class MultiPlayActivity extends AppCompatActivity {
+    private static final int CHANNEL_NUM = 60;      // 채널 갯수
+
+    private int selectedChannel = 1;
+
     private int progressStatus = 0;
     private Handler handler = new Handler();
+
+    private ArrayList<Integer> channelList = new ArrayList<>();
+    private ArrayAdapter<Integer> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
+
+        // 1 ~ CHANNEL_NUM까지 배열에 담음
+        for(int i=1; i<=CHANNEL_NUM; i++) {
+            channelList.add(i);
+        }
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
+
+
+
     }
 
     public void onRandomBtnClicked(View v) {
@@ -34,7 +59,8 @@ public class MultiPlayActivity extends AppCompatActivity {
         });
         loadingDialog.show();
 
-        // 여기서 실제 작업, 작업 끝나면 loadingDialog.dismiss();
+        // 여기서 실제 작업(채널 선정), 작업 끝나면 loadingDialog.dismiss();
+
 
 
 
@@ -43,6 +69,33 @@ public class MultiPlayActivity extends AppCompatActivity {
     }
 
     public void onSelectBtnClicked(View v) {
+        final Spinner spinner = new Spinner(this);
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        spinner.setAdapter(adapter);
+//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                selectedChannel = channelList.get(i);
+//            }
+//        });
 
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(spinner);
+        builder.setMessage("채널을 선택해주세요");
+        builder.setNeutralButton("입장", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setCancelable(false);
+        builder.create().show();
     }
 }
