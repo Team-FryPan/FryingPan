@@ -2,13 +2,11 @@ package net.cloudapp.eggfry.frypan;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.IntegerRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -62,22 +60,27 @@ public class MultiPlayActivity extends AppCompatActivity {
         // 여기서 실제 작업(채널 선정), 작업 끝나면 loadingDialog.dismiss();
 
 
-
-
-
-
     }
 
     public void onSelectBtnClicked(View v) {
         final Spinner spinner = new Spinner(this);
         spinner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         spinner.setAdapter(adapter);
-//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                selectedChannel = channelList.get(i);
-//            }
-//        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedChannel = (Integer) spinner.getSelectedItem();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+
+        });
+
+
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(spinner);
@@ -86,7 +89,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
-
+                Log.d("asdf", String.valueOf(selectedChannel));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
