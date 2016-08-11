@@ -9,8 +9,43 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="net.cloudapp.eggfry.frypan.MainActivity">
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="멀티플레이"
+        android:id="@+id/play_btn"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="91dp"
+        android:onClick="onPlayBtnClicked" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="게임설명"
+        android:id="@+id/how_to_btn"
+        android:layout_marginTop="64dp"
+        android:layout_below="@+id/play_btn"
+        android:layout_centerHorizontal="true"
+        android:onClick="onHowToBtnClicked" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="개발정보"
+        android:id="@+id/dev_info_btn"
+        android:layout_below="@+id/how_to_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="61dp"
+        android:onClick="onDevInfoBtnClicked" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="종료"
+        android:id="@+id/exit_btn"
+        android:layout_marginTop="63dp"
+        android:layout_below="@+id/dev_info_btn"
+        android:layout_centerHorizontal="true"
+        android:onClick="onExitBtnClicked"/>
 </RelativeLayout>
