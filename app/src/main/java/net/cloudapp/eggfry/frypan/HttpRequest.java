@@ -9,9 +9,12 @@ public class HttpRequest {
 
     // 기본 생성자
 
-    public HttpRequest() {
+    public HttpRequest() { }
 
-    }
+    private String userName;
+    private String password;
+
+    public HttpResponse httpResponse = null;
 
     /*
      * Parameters
@@ -23,6 +26,9 @@ public class HttpRequest {
      */
     public boolean getRequest(String address) {
         HttpRequestThread httpRequestThread = new HttpRequestThread(address);
+        httpRequestThread.httpResponse = this.httpResponse;
+        httpRequestThread.userName = this.userName;
+        httpRequestThread.password = this.password;
         httpRequestThread.execute();
         return true;
     }
@@ -48,6 +54,8 @@ public class HttpRequest {
                     .append(map.get(key))
                     .append("&");
         }
+        this.userName = map.get("UserName");
+        this.password = map.get("Password");
         return sb.toString();
     }
 }

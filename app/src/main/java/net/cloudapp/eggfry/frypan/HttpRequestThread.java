@@ -20,6 +20,10 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     // 기본 변수
     private String address; // 최종 주소
 
+    public HttpResponse httpResponse = null;
+    public String userName;
+    public String password;
+
     // 기본 생성자
     public HttpRequestThread() {
         super();
@@ -39,21 +43,21 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     // 본 작업
     @Override
     protected String doInBackground(String... params) {
-        String responseString = null;
+        String responseString = address+"\n"+userName+"\n"+password;
         try {
             URL url = new URL(address);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             if(conn.getResponseCode() == HttpsURLConnection.HTTP_OK){ // HTTP OK 응답 받았을 때
                 InputStream in = new BufferedInputStream(conn.getInputStream()); // InputStream 가져오기
-                responseString = InputToString(in); // String으로 변환
+                responseString += "\n"+InputToString(in); // String으로 변환
             }
             else {
-                responseString = "Fail"; // Error라고 띄움
+                responseString += "\nFail"; // Error라고 띄움
             }
         } catch (Exception e) {
             e.printStackTrace();
-            responseString = "Fail";
+            responseString += "\nFail";
         }
         return responseString;
     }
@@ -99,17 +103,6 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        String[] values = s.split("\n");
-        switch (values[0]) {
-            case "Success" :
-                System.out.println("Success!!!");
-                break;
-            case "TryAgain" :
-                System.out.println("Try AGAIN!!!");
-                break;
-            case "Fail" :
-                System.out.println("Error!");
-                break;
-        }
+        httpResponse.processFinish(s);
     }
 }

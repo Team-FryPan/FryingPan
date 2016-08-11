@@ -1,16 +1,18 @@
 package net.cloudapp.eggfry.frypan;
 
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.IntegerRes;
+import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -28,6 +30,25 @@ public class MultiPlayActivity extends AppCompatActivity {
     private ArrayList<Integer> channelList = new ArrayList<>();
     private ArrayAdapter<Integer> adapter;
 
+    private SocketService mService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            SocketService.mBinder binder = (SocketService.mBinder) service;
+            mService = binder.getService();
+            mService.registerCallback(mCallback);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService=null;
+        }
+    };
+
+    private SocketService.ICallback mCallback = new SocketService.ICallback() {
+        public void recvData() {}
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +61,6 @@ public class MultiPlayActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
 
-
-
     }
 
     public void onRandomBtnClicked(View v) {
@@ -51,20 +70,16 @@ public class MultiPlayActivity extends AppCompatActivity {
         loadingDialog = new ProgressDialog(MultiPlayActivity.this);
         loadingDialog.setMessage("적절한 방을 찾는 중입니다...");
         loadingDialog.setCancelable(true);
+        setSocketServiceConnection("70");
+
         loadingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                mService.myServiceFunc("Cancel");
                 dialog.dismiss();
             }
         });
         loadingDialog.show();
-
-        // 여기서 실제 작업(채널 선정), 작업 끝나면 loadingDialog.dismiss();
-
-
-
-
-
 
     }
 
@@ -86,16 +101,28 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
-
+                setSocketServiceConnection(String.valueOf(i));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                mService.myServiceFunc("Cancel");
                 dialogInterface.dismiss();
             }
         });
         builder.setCancelable(false);
         builder.create().show();
+    }
+
+    public void setSocketServiceConnection(String channel) {
+        SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
+        String username = sp.getString("id", "");
+
+        Intent it = new Intent(this, SocketService.class);
+        it.putExtra("username", username);
+        it.putExtra("channel", channel);
+
+        bindService(it, mConnection, Context.BIND_AUTO_CREATE);
     }
 }
