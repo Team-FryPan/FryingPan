@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         String[] messages = output.split("\n");
         switch(messages[3]) {
             case "Success" :
-                if (messages[0].indexOf("InsertUser.php")!=-1 || messages[0].indexOf("CheckUser.php")!=-1) {
-                    if (messages[0].indexOf("InsertUser.php")!=-1) {
+                if (messages[0].contains("InsertUser.php") || messages[0].contains("CheckUser.php")) {
+                    if (messages[0].contains("InsertUser.php")) {
                         Toast.makeText(this, "가입이 완료되었습니다. ", Toast.LENGTH_SHORT).show();
-                    } else if (messages[0].indexOf("CheckUser.php")!=-1) {
+                    } else if (messages[0].contains("CheckUser.php")) {
                         Toast.makeText(this, "로그인 성공했습니다. ", Toast.LENGTH_SHORT).show();
                     }
                     loginDialog.dismiss();
@@ -66,14 +66,14 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("id", messages[1]);
                     editor.putString("pwd", messages[2]);
-                    editor.commit();
+                    editor.apply();
                 }
 
                 break;
             case "TryAgain" :
-                if(messages[0].indexOf("InsertUser.php")!=-1) {
+                if(messages[0].contains("InsertUser.php")) {
                     Toast.makeText(this, "중복된 ID입니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show();
-                } else if(messages[0].indexOf("CheckUser.php")!=-1) {
+                } else if(messages[0].contains("CheckUser.php")) {
                     Toast.makeText(this, "아이디 혹은 비밀번호를 확인해주세요. ", Toast.LENGTH_SHORT).show();
                 }
 

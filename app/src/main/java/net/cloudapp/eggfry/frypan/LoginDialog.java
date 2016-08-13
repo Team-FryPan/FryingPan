@@ -38,7 +38,8 @@ public class LoginDialog extends Dialog {
 
         setContentView(R.layout.dialog_login);
 
-        ((Button)findViewById(R.id.login_btn)).setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.login_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.runOnUiThread(new Runnable() {
@@ -56,7 +57,7 @@ public class LoginDialog extends Dialog {
             }
         });
 
-        ((Button)findViewById(R.id.register_btn)).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.register_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.runOnUiThread(new Runnable() {
@@ -73,8 +74,6 @@ public class LoginDialog extends Dialog {
                 });
             }
         });
-
-
     }
 
     private void webconnect(String fileName, String input_id, String input_pw) {
@@ -85,7 +84,7 @@ public class LoginDialog extends Dialog {
         String deviceName= Build.DEVICE;
         String version=String.valueOf(android.os.Build.VERSION.SDK_INT);
 
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put("fileName", fileName);
         map.put("UserName", username);
         map.put("Password", password);

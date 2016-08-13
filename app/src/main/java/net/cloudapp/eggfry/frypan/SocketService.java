@@ -107,6 +107,14 @@ public class SocketService extends Service{
         }
         String[] messages = response.split(" ");
         switch (messages[0]) {
+            case "Error" :
+                if(messages[1].equals("1001")) {
+                    // 서버가 다 참
+                } else if(messages[1].equals("1002")) {
+                    // 채널이 다 참
+                }
+                break;
+
             case "Login" :
                 this.username = messages[1];
                 this.channel = messages[2];
