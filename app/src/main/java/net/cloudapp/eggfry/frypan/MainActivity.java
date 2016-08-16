@@ -1,143 +1,115 @@
 package net.cloudapp.eggfry.frypan;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-import java.util.HashMap;
-import java.util.Map;
+public class MainActivity extends AppCompatActivity{
 
-//private void onLoginBtnClicked(View v) {
-//        EditText et_username, et_channel;
-//        String username, channel;
-//        Button ok;
-//private SocketService mService;
-//
-//private ServiceConnection mConnection = new ServiceConnection() {
-//@Override
-//public void onServiceConnected(ComponentName name, IBinder service) {
-//        SocketService.mBinder binder = (SocketService.mBinder) service;
-//        mService = binder.getService();
-//        mService.registerCallback(mCallback);
-//        }
-//
-//@Override
-//public void onServiceDisconnected(ComponentName name) {
-//        mService=null;
-//        }
-//        };
-//
-//private SocketService.ICallback mCallback = new SocketService.ICallback() {
-//public void recvData() {}
-//        };
-//
-//@Override
-//protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        et_username=(EditText)findViewById(R.id.editText);
-//        et_channel=(EditText)findViewById(R.id.editText2);
-//
-//        ok=(Button)findViewById(R.id.button);
-//        }
-//
-//public void onButtonClicked(View view) {
-//        username=et_username.getText().toString();
-//        channel=et_channel.getText().toString();
-//
-//        Intent it = new Intent(this, SocketService.class);
-//        it.putExtra("username", username);
-//        it.putExtra("channel", channel);
-//        bindService(it, mConnection, Context.BIND_AUTO_CREATE);
-//        }
-//
-//        // 호출은 mService.myServiceFunc();
-//        }
+    private LoginDialog loginDialog;
+    private BackGroundMusicManager bgmManager;
+    private SoundManager soundManager;
 
-public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
+
         // if 기존 로그인 정보 X
         if("".equals(sp.getString("id", ""))
                 || "".equals(sp.getString("pwd", ""))) {
-            LoginDialog loginDialog = new LoginDialog(this);
+            loginDialog = new LoginDialog(this);
+//            loginDialog.httpResponse = this;
+//            loginDialog.activity = this;
             loginDialog.setCanceledOnTouchOutside(false);
             loginDialog.show();
 
         }
+
+        bgmManager = new BackGroundMusicManager(this, R.raw.opening);
+        soundManager = new SoundManager(this, R.raw.buttonclicked, R.raw.game_buttonpressed);
+
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() { // 3초 뒤 BGM 재생
+            @Override
+            public void run() {
+                bgmManager.play();
+            }
+        }, 3000);
     }
 
-    public void onPlayBtnClicked(View v) {
+    public void onPlayBtnClicked(View v) { // 플레이 버튼 클릭
+        soundManager.playSoundWithoutLoad("click");
         Intent it = new Intent(this, MultiPlayActivity.class);
-
         startActivity(it);
     }
 
-    public void onHowToBtnClicked(View v) {
+    public void onHowToBtnClicked(View v) { // 게임 플레이 방법 클릭
+        soundManager.playSoundWithoutLoad("click");
         Intent it = new Intent(this, HowToActivity.class);
-
         startActivity(it);
     }
 
-    public void onDevInfoBtnClicked(View v) {
+    public void onDevInfoBtnClicked(View v) { // 개발자 정보 버튼 클릭
+        soundManager.playSoundWithoutLoad("click");
         Intent it = new Intent(this, DevInfoActivity.class);
         startActivity(it);
     }
 
-    public void onExitBtnClicked(View v) {
+    public void onExitBtnClicked(View v) { // Exit버튼 클릭
+        soundManager.playSoundWithoutLoad("click");
+        bgmManager.stop();
         finish();
     }
 
-    public void onLoginBtnClicked(View v) {
-        Toast.makeText(this, "LoginBtnClicked", Toast.LENGTH_SHORT).show();
-    }
-
-    public void onRegisterBtnClicked(View v) {
-        EditText ed_id = (EditText)findViewById(R.id.ed_id);
-        EditText ed_pwd = (EditText)findViewById(R.id.ed_pwd);
-
-        if("".equals(ed_id.getText().toString()) || "".equals(ed_pwd.getText().toString())) {
-            Toast.makeText(this, "가입을 원하는 ID와 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+    public void onSoundToggleClicked(View v) { // SoundToggle이 클릭되었을 때
+        if(((ToggleButton)v).isChecked()) {
+            bgmManager.play();
+            soundManager.enableSound(true);
         } else {
-
+            bgmManager.stop();
+            soundManager.enableSound(false);
         }
     }
 
-    // ID 중복 체크
-    private boolean checkID(String input_id) {
-        String address = "http://mascorewebserver.hol.es";
-        String fileName = "InsertUser.php";
-        String username="ABCDcd";
-        String password="a1b1";
 
-        String deviceName= Build.DEVICE;
-        String version=String.valueOf(android.os.Build.VERSION.SDK_INT);
+    public void processFinish(String output) { // 로그인 http 통신 처리
+        String[] messages = output.split("\n");
+        switch(messages[3]) {
+            case "Success" : // 성공 메세지
+                if (messages[0].indexOf("InsertUser.php")!=-1 || messages[0].indexOf("CheckUser.php")!=-1) {
+                    if (messages[0].indexOf("InsertUser.php")!=-1) {
+                        Toast.makeText(this, "가입이 완료되었습니다. ", Toast.LENGTH_SHORT).show();
+                    } else if (messages[0].indexOf("CheckUser.php")!=-1) {
+                        Toast.makeText(this, "로그인 성공했습니다. ", Toast.LENGTH_SHORT).show();
+                    }
+                    loginDialog.dismiss();
+                    SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("id", messages[1]);
+                    editor.putString("pwd", messages[2]);
+                    editor.commit();
+                }
 
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("fileName", fileName);
-        map.put("UserName", username);
-        map.put("Password", password);
-        map.put("version", version);
-        map.put("model", deviceName);
+                break;
+            case "TryAgain" : // 실패 메세지
+                if(messages[0].indexOf("InsertUser.php")!=-1) {
+                    Toast.makeText(this, "중복된 ID입니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else if(messages[0].indexOf("CheckUser.php")!=-1) {
+                    Toast.makeText(this, "아이디 혹은 비밀번호를 확인해주세요. ", Toast.LENGTH_SHORT).show();
+                }
 
-        HttpRequest httpRequest = new HttpRequest();
-        String requestAddress = httpRequest.makeUrl(address, map);
-        httpRequest.getRequest(requestAddress);
-        return true;
+                break;
+            case "Fail" : // 오류 메세지
+                Toast.makeText(this, "오류입니다. 네트워크를 확인해주세요. ", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
