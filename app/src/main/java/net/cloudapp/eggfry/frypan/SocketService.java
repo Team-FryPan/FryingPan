@@ -10,35 +10,24 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by user on 2016-08-07.
  */
 public class SocketService extends Service{
 
-    // 기본 변수
-    private String address="http://eggfry.cloudapp.net:6600/";
-    private String[] arr_nickname = {"포도", "딸기", "사과", "수박"};
-    private int[] score = new int[4];
-    private String username, channel;
-    private int userNum = -1;
-    private int nickNum = -1;
-    private int attackCount = -1;
+    private String username, channel; // 유저의 이름과 채널
 
-    private boolean isConnected = false;
-    private boolean isStarted = false;
+    private boolean isConnected = false; // 서버와 연결되었는지
+    private boolean isStarted = false; // 게임이 시작되었는지
 
-    private Timer timer = new Timer();
-    private long timeCount=0;
+    private GameManager gameManager; // 게임을 컨트롤하는 클래스
 
     // 기본 생성자
-    public SocketService() {
-    }
+    public SocketService() {}
 
     private Socket mSocket; {
         try {
+            String address = "http://eggfry.cloudapp.net:6600/";
             mSocket = IO.socket(address + "?username=" + username + "&channel=" + channel);
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,21 +57,23 @@ public class SocketService extends Service{
 
     private final IBinder mBinder = new mBinder();
 
+    // Activity와 연결되었을 때
     @Override
     public IBinder onBind(Intent intent) {
         username = intent.getStringExtra("username");
-        channel=intent.getStringExtra("channel");
+        channel = intent.getStringExtra("channel");
         System.out.println(username);
         System.out.println(channel);
 
         mSocket.connect();
-        mSocket.emit("fromClient", "Login " + username + " " + channel);
-        mSocket.on("toClient", onNewMessage);
+        mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
+        mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
 
+        gameManager = new GameManager(); // 게임매니저 선언
         return mBinder;
     }
 
-    public interface ICallback {
+    public interface ICallback { // Activity로부터 함수를 호출받을 수 있는 Callback
         public void recvData();
     }
 
@@ -92,69 +83,54 @@ public class SocketService extends Service{
         mCallback=cb;
     }
 
-    public void myServiceFunc(String message) {
+    public void myServiceFunc(String message) { // Activity로부터 메세지를 받음
         switch (message) {
-            case "Cancel":
-                mSocket.emit("fromClient", "Cancel");
+            case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
+                mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
                 break;
         }
 
     }
 
-    public void proccessResponse(String response) {
-        if(response.equals("Server Connection")) {
-            isConnected = true;
+    public void proccessResponse(String response) { // SocketServer로부터 명령을 받음
+        if(response.equals("Server Connection")) { // Server와 연결되었을 때
+            isConnected = true; // 연결됨
         }
         String[] messages = response.split(" ");
         switch (messages[0]) {
-            case "Error" :
-                if(messages[1].equals("1001")) {
-                    // 서버가 다 참
-                } else if(messages[1].equals("1002")) {
-                    // 채널이 다 참
-                }
-                break;
-
-            case "Login" :
+            case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
                 this.username = messages[1];
                 this.channel = messages[2];
                 break;
 
-            case "Set" :
+            case "Set" : // 게임이 시작되었을 때 (자신의 정보를 모두 저장)
                 isStarted = true;
                 if(messages[1].equals(username)) {
-                    this.nickNum = Integer.parseInt(messages[2]);
-                    this.userNum = Integer.parseInt(messages[3]);
+                    gameManager.setNickNum(Integer.parseInt(messages[2]));
+                    gameManager.setUserNum(Integer.parseInt(messages[3]));
                 }
-
-                TimerTask task = new TimerTask() {
-                    @Override
-                    public void run() {
-                        timeCount++;
-                    }
-                };
-                timer.schedule(task, 1000, 100);
+                gameManager.startTimer();
 
                 break;
 
-            case "Report" :
+            case "Report" : // 점수를 보고
                 for(int i=1;i<5;i++) {
-                    score[i-1] = Integer.parseInt(messages[i]);
+                    gameManager.setScore(i-1, Integer.parseInt(messages[i]));
                 }
                 break;
 
-            case "Result" :
+            case "Result" : // 게임이 끝났을 때 결과 보고(점수로 표현, 진 사람은 -1)
                 for(int i=0;i<4;i++) {
-                    score[i] = Integer.parseInt(messages[i*2+2]);
+                    gameManager.setScore(i, Integer.parseInt(messages[i*2+2]));
                     // Result 처리
                 }
                 break;
 
-            case "Send" :
-                if(nickNum == Integer.parseInt(messages[2])) {
-                    attackCount = Integer.parseInt(messages[3]);
-                } else {
-                    attackCount = 4;
+            case "Send" : // 누가 누구에게 공격
+                if(gameManager.getNickNum() == Integer.parseInt(messages[2])) { // 자신이 공격당하면
+                    gameManager.setAttackCount(Integer.parseInt(messages[3])); // attackCount만큼 후라이팬 놀이 수행
+                } else { // 기본적으로
+                    gameManager.setAttackCount(4); // attackCount는 4
                 }
 
         }

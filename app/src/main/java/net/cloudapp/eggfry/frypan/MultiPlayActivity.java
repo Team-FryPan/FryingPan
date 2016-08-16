@@ -37,22 +37,20 @@ public class MultiPlayActivity extends AppCompatActivity {
     private SocketService mService;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
+        public void onServiceConnected(ComponentName name, IBinder service) { // 서비스와 연결되었을 때
             SocketService.mBinder binder = (SocketService.mBinder) service;
             mService = binder.getService();
             mService.registerCallback(mCallback);
         }
 
         @Override
-        public void onServiceDisconnected(ComponentName name) {
+        public void onServiceDisconnected(ComponentName name) { // 서비스와 떨어졌을 때
             mService=null;
         }
     };
 
-    private SocketService.ICallback mCallback = new SocketService.ICallback() {
-        public void recvData() {
-
-        }
+    private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
+        public void recvData() {}
     };
 
     @Override

@@ -19,6 +19,5 @@ public class WaitingRoomActivity extends AppCompatActivity {
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-
     }
 }
