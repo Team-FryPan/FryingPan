@@ -12,9 +12,13 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -80,33 +84,29 @@ public class MultiPlayActivity extends AppCompatActivity {
             }
         });
         loadingDialog.show();
-
     }
 
     public void onSelectBtnClicked(View v) {
-        final Spinner spinner = new Spinner(this);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        spinner.setAdapter(adapter);
-//        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                selectedChannel = channelList.get(i);
-//            }
-//        });
+
+        final NumberPicker numberPicker = new NumberPicker(this);
+        numberPicker.setMinValue(1);
+        numberPicker.setMaxValue(60);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(spinner);
+        builder.setView(numberPicker);
         builder.setMessage("채널을 선택해주세요");
         builder.setNeutralButton("입장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
-                setSocketServiceConnection(String.valueOf(i));
+//                 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
+                setSocketServiceConnection(
+                        String.valueOf(numberPicker.getValue()));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                // Cancel 누르면 NullPointerException
                 mService.myServiceFunc("Cancel");
                 dialogInterface.dismiss();
             }

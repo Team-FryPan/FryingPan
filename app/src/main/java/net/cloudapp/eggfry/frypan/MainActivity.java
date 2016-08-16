@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     private LoginDialog loginDialog;
     private BackGroundMusicManager bgmManager;
@@ -26,15 +26,15 @@ public class MainActivity extends AppCompatActivity{
         if("".equals(sp.getString("id", ""))
                 || "".equals(sp.getString("pwd", ""))) {
             loginDialog = new LoginDialog(this);
-//            loginDialog.httpResponse = this;
-//            loginDialog.activity = this;
+            loginDialog.httpResponse = this;
+            loginDialog.activity = this;
             loginDialog.setCanceledOnTouchOutside(false);
             loginDialog.show();
 
         }
 
         bgmManager = new BackGroundMusicManager(this, R.raw.opening);
-        soundManager = new SoundManager(this, R.raw.buttonclicked, R.raw.game_buttonpressed);
+        soundManager = new SoundManager(this, R.raw.buttonclicked, R.raw.buttonpressed);
 
         Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() { // 3초 뒤 BGM 재생
@@ -43,27 +43,32 @@ public class MainActivity extends AppCompatActivity{
                 bgmManager.play();
             }
         }, 3000);
+
+
+
+
     }
 
-    public void onPlayBtnClicked(View v) { // 플레이 버튼 클릭
+    public void onPlayBtnClicked(View v) {
         soundManager.playSoundWithoutLoad("click");
         Intent it = new Intent(this, MultiPlayActivity.class);
         startActivity(it);
     }
 
-    public void onHowToBtnClicked(View v) { // 게임 플레이 방법 클릭
+    public void onHowToBtnClicked(View v) {
         soundManager.playSoundWithoutLoad("click");
-        Intent it = new Intent(this, HowToActivity.class);
+        Intent it = new Intent(this, WaitingRoomActivity.class);
+
         startActivity(it);
     }
 
-    public void onDevInfoBtnClicked(View v) { // 개발자 정보 버튼 클릭
+    public void onDevInfoBtnClicked(View v) {
         soundManager.playSoundWithoutLoad("click");
         Intent it = new Intent(this, DevInfoActivity.class);
         startActivity(it);
     }
 
-    public void onExitBtnClicked(View v) { // Exit버튼 클릭
+    public void onExitBtnClicked(View v) {
         soundManager.playSoundWithoutLoad("click");
         bgmManager.stop();
         finish();
@@ -84,10 +89,10 @@ public class MainActivity extends AppCompatActivity{
         String[] messages = output.split("\n");
         switch(messages[3]) {
             case "Success" : // 성공 메세지
-                if (messages[0].indexOf("InsertUser.php")!=-1 || messages[0].indexOf("CheckUser.php")!=-1) {
-                    if (messages[0].indexOf("InsertUser.php")!=-1) {
+                if (messages[0].contains("InsertUser.php") || messages[0].contains("CheckUser.php")) {
+                    if (messages[0].contains("InsertUser.php")) {
                         Toast.makeText(this, "가입이 완료되었습니다. ", Toast.LENGTH_SHORT).show();
-                    } else if (messages[0].indexOf("CheckUser.php")!=-1) {
+                    } else if (messages[0].contains("CheckUser.php")) {
                         Toast.makeText(this, "로그인 성공했습니다. ", Toast.LENGTH_SHORT).show();
                     }
                     loginDialog.dismiss();
@@ -95,14 +100,14 @@ public class MainActivity extends AppCompatActivity{
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("id", messages[1]);
                     editor.putString("pwd", messages[2]);
-                    editor.commit();
+                    editor.apply();
                 }
 
                 break;
             case "TryAgain" : // 실패 메세지
-                if(messages[0].indexOf("InsertUser.php")!=-1) {
+                if(messages[0].contains("InsertUser.php")) {
                     Toast.makeText(this, "중복된 ID입니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show();
-                } else if(messages[0].indexOf("CheckUser.php")!=-1) {
+                } else if(messages[0].contains("CheckUser.php")) {
                     Toast.makeText(this, "아이디 혹은 비밀번호를 확인해주세요. ", Toast.LENGTH_SHORT).show();
                 }
 

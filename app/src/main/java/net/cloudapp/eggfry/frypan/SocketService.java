@@ -15,8 +15,6 @@ import com.github.nkzawa.socketio.client.Socket;
  */
 public class SocketService extends Service{
 
-    // 기본 변수
-    private String address="http://eggfry.cloudapp.net:6600/";
     private String username, channel; // 유저의 이름과 채널
 
     private boolean isConnected = false; // 서버와 연결되었는지
@@ -29,6 +27,7 @@ public class SocketService extends Service{
 
     private Socket mSocket; {
         try {
+            String address = "http://eggfry.cloudapp.net:6600/";
             mSocket = IO.socket(address + "?username=" + username + "&channel=" + channel);
         } catch (Exception e) {
             e.printStackTrace();

@@ -21,6 +21,13 @@
         <activity android:name=".HowToActivity" />
         <activity android:name=".DevInfoActivity" />
 
+        <service
+            android:name=".SocketService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".GameActivity" />
+        <activity android:name=".WaitingRoomActivity"></activity>
     </application>
 
 </manifest>
