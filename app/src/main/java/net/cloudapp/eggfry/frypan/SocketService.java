@@ -4,11 +4,15 @@ package net.cloudapp.eggfry.frypan;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+import java.util.Timer;
 
 /**
  * Created by user on 2016-08-07.
@@ -21,6 +25,8 @@ public class SocketService extends Service{
     private boolean isStarted = false; // 게임이 시작되었는지
 
     private GameManager gameManager; // 게임을 컨트롤하는 클래스
+
+    private Timer timer = new Timer();
 
     // 기본 생성자
     public SocketService() {}
@@ -69,12 +75,22 @@ public class SocketService extends Service{
         mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
 
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isConnected) { // 연결이 안되었을 때
+                    mCallback.recvData("Connection Fail");
+                }
+            }
+        }, 3000);
+
         gameManager = new GameManager(); // 게임매니저 선언
         return mBinder;
     }
 
     public interface ICallback { // Activity로부터 함수를 호출받을 수 있는 Callback
-        public void recvData();
+        public void recvData(String string);
     }
 
     private ICallback mCallback;
@@ -95,6 +111,7 @@ public class SocketService extends Service{
     public void proccessResponse(String response) { // SocketServer로부터 명령을 받음
         if(response.equals("Server Connection")) { // Server와 연결되었을 때
             isConnected = true; // 연결됨
+
         }
         String[] messages = response.split(" ");
         switch (messages[0]) {

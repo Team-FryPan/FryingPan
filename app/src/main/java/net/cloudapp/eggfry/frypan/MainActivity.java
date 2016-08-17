@@ -14,6 +14,26 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     private LoginDialog loginDialog;
     private BackGroundMusicManager bgmManager;
     private SoundManager soundManager;
+    public void setSound() {
+        soundManager = new SoundManager(this);
+
+        soundManager.loadSound("click", R.raw.buttonclicked);
+        soundManager.loadSound("apple", R.raw.game_apple);
+        soundManager.loadSound("press", R.raw.game_buttonpressed);
+        soundManager.loadSound("four", R.raw.game_kiwi);
+        soundManager.loadSound("lemon", R.raw.game_lemon);
+        soundManager.loadSound("one", R.raw.game_one);
+        soundManager.loadSound("three", R.raw.game_three);
+        soundManager.loadSound("two", R.raw.game_two);
+        soundManager.loadSound("watermelon", R.raw.game_watermelon);
+        soundManager.loadSound("start1", R.raw.start_1);
+        soundManager.loadSound("start2", R.raw.start_2);
+        soundManager.loadSound("start3", R.raw.start_3);
+        soundManager.loadSound("start4", R.raw.start_4);
+
+        bgmManager = new BackGroundMusicManager(this, R.raw.opening);
+        bgmManager.play();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         }
 
         bgmManager = new BackGroundMusicManager(this, R.raw.opening);
-        soundManager = new SoundManager(this, R.raw.buttonclicked, R.raw.buttonpressed);
+        soundManager = new SoundManager(this);
+        setSound();
 
         Handler mHandler = new Handler();
         mHandler.postDelayed(new Runnable() { // 3초 뒤 BGM 재생
@@ -44,32 +65,29 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
             }
         }, 3000);
 
-
-
-
     }
 
     public void onPlayBtnClicked(View v) {
-        soundManager.playSoundWithoutLoad("click");
+        soundManager.playSound("click");
         Intent it = new Intent(this, MultiPlayActivity.class);
         startActivity(it);
     }
 
     public void onHowToBtnClicked(View v) {
-        soundManager.playSoundWithoutLoad("click");
+        soundManager.playSound("click");
         Intent it = new Intent(this, WaitingRoomActivity.class);
 
         startActivity(it);
     }
 
     public void onDevInfoBtnClicked(View v) {
-        soundManager.playSoundWithoutLoad("click");
+        soundManager.playSound("click");
         Intent it = new Intent(this, DevInfoActivity.class);
         startActivity(it);
     }
 
     public void onExitBtnClicked(View v) {
-        soundManager.playSoundWithoutLoad("click");
+        soundManager.playSound("click");
         bgmManager.stop();
         finish();
     }

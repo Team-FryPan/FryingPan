@@ -12,14 +12,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -33,6 +28,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private ArrayList<Integer> channelList = new ArrayList<>();
     private ArrayAdapter<Integer> adapter;
+
+    private ProgressDialog loadingDialog;
 
     private SocketService mService;
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -50,7 +47,21 @@ public class MultiPlayActivity extends AppCompatActivity {
     };
 
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
-        public void recvData() {}
+        public void recvData(String message) {
+            if(message.equals("Connection Fail")) {
+                loadingDialog.dismiss();
+                AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();     //닫기
+                    }
+                });
+                alert.setMessage("네트워크 문제로 연결할 수 없습니다.");
+                alert.show();
+                unbindService(mConnection);
+            }
+        }
     };
 
     @Override
@@ -69,7 +80,6 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     public void onRandomBtnClicked(View v) {
         // 로딩 빙글빙글
-        ProgressDialog loadingDialog;
 
         loadingDialog = new ProgressDialog(MultiPlayActivity.this);
         loadingDialog.setMessage("적절한 방을 찾는 중입니다...");
@@ -81,6 +91,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 mService.myServiceFunc("Cancel");
                 dialog.dismiss();
+                unbindService(mConnection);
             }
         });
         loadingDialog.show();
@@ -109,6 +120,7 @@ public class MultiPlayActivity extends AppCompatActivity {
                 // Cancel 누르면 NullPointerException
                 mService.myServiceFunc("Cancel");
                 dialogInterface.dismiss();
+                unbindService(mConnection);
             }
         });
         builder.setCancelable(false);
