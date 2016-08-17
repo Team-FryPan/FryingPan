@@ -108,7 +108,8 @@ public class SocketService extends Service{
         mSocket.close();
     }
 
-    public interface ICallback { // Activity로부터 함수를 호출받을 수 있는 Callback
+    // Activity로부터 함수를 호출받을 수 있는 Callback
+    public interface ICallback {
         public void recvData(String string);
     }
 
@@ -118,7 +119,8 @@ public class SocketService extends Service{
         mCallback=cb;
     }
 
-    public void myServiceFunc(String message) { // Activity로부터 메세지를 받음
+    // Activity로부터 메세지를 받음
+    public void myServiceFunc(String message) {
         switch (message) {
             case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
                 mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄

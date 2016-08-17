@@ -111,16 +111,12 @@ public class MultiPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
 
-//        Intent it = getIntent();
-//        soundManager = (SoundManager) it.getParcelableExtra("soundManager");
-
         // 1 ~ CHANNEL_NUM까지 배열에 담음
         for(int i=1; i<=CHANNEL_NUM; i++) {
             channelList.add(i);
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
-
     }
 
     public void onRandomBtnClicked(View v) {
