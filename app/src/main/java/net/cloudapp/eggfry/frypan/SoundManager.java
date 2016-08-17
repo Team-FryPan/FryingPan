@@ -19,14 +19,9 @@ public class SoundManager {
     public SoundManager(Context context) { // 기본적으로 많이 쓰이는 소리 세팅
         soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         this.context = context;
-//        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() { // 자주 쓰이는 소리가 아니라면
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//
-//            }
-//        });
     }
-    public void loadSound(String name, int resid) {
+
+    public void loadSound(String name, int resid) { // 소리들을 로딩
         sounds.put(name, soundPool.load(context, resid, 1));
     }
 

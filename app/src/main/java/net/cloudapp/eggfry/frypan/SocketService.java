@@ -12,8 +12,6 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import java.util.Timer;
-
 /**
  * Created by user on 2016-08-07.
  */
@@ -24,9 +22,7 @@ public class SocketService extends Service{
     private boolean isConnected = false; // 서버와 연결되었는지
     private boolean isStarted = false; // 게임이 시작되었는지
 
-    private GameManager gameManager; // 게임을 컨트롤하는 클래스
-
-    private Timer timer = new Timer();
+    public static GameManager gameManager; // 게임을 컨트롤하는 클래스
 
     // 기본 생성자
     public SocketService() {}
@@ -55,15 +51,25 @@ public class SocketService extends Service{
         }
     };
 
+    // Web Socket으로부터 Message 받기
+    private Emitter.Listener onDisconnected = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println((String)args[0]);
+                    proccessResponse((String)args[0]);
+                }
+            }).start();
+        }
+    };
+
     public class mBinder extends Binder {
         SocketService getService() {
             return SocketService.this;
         }
-    }
-
-    @Override
-    public void onCreate() {
-
     }
 
     private final IBinder mBinder = new mBinder();
@@ -80,6 +86,7 @@ public class SocketService extends Service{
         mSocket.connect();
         mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
+        mSocket.on("disconnected", onDisconnected);
 
         Handler mHandler = new Handler(Looper.getMainLooper());
         mHandler.postDelayed(new Runnable() {
@@ -144,6 +151,7 @@ public class SocketService extends Service{
                     gameManager.setUserNum(Integer.parseInt(messages[3]));
                 }
                 gameManager.startTimer();
+                mCallback.recvData("Set");
 
                 break;
 

@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 public class WaitingRoomActivity extends AppCompatActivity {
 
     private SocketService mService;
-    private Intent intent;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) { // 서비스와 연결되었을 때
@@ -29,7 +28,9 @@ public class WaitingRoomActivity extends AppCompatActivity {
     };
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String str) {
-
+            if(str.equals("Set")) {
+                // Activity 넘어감
+            }
         }
     };
 

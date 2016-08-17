@@ -14,7 +14,8 @@ public class GameManager {
     private int nickNum = -1; // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
     private int attackCount = -1; // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
 
-    private Timer timer = new Timer(); // 타이머
+    private Timer timer = new Timer(); // 타이머(60초마다 SpeedUp)
+    private int speedLevel = 1;
     private long timeCount=0; // 게임이 시작되면 timeCount를 100millis마다 작동
 
     public int[] getScore() {
@@ -58,6 +59,9 @@ public class GameManager {
             @Override
             public void run() {
                 timeCount++;
+                if(timeCount%600==0) {
+                    speedLevel++;
+                }
             }
         };
         timer.schedule(task, 1000, 100);

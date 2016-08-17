@@ -12,8 +12,8 @@ import android.widget.ToggleButton;
 public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     private LoginDialog loginDialog;
-    private BackGroundMusicManager bgmManager;
-    private SoundManager soundManager;
+    public static BackGroundMusicManager bgmManager;
+    public static SoundManager soundManager;
     public void setSound() {
         soundManager = new SoundManager(this);
 
@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     public void onHowToBtnClicked(View v) {
         soundManager.playSound("click");
         Intent it = new Intent(this, WaitingRoomActivity.class);
-
         startActivity(it);
     }
 
