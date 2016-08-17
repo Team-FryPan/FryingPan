@@ -33,7 +33,7 @@ public class SoundManager {
     public void playSound(String string) { // 자주 쓰이는 소리 재생
         if(isEnabled) {
             int sound = sounds.get(string);
-            soundPool.play(sound, 100, 100, 1, 0, 1f);
+            soundPool.play(sound, 50, 50, 1, 0, 1f);
         }
     }
 

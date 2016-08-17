@@ -61,6 +61,11 @@ public class SocketService extends Service{
         }
     }
 
+    @Override
+    public void onCreate() {
+
+    }
+
     private final IBinder mBinder = new mBinder();
 
     // Activity와 연결되었을 때
@@ -68,6 +73,7 @@ public class SocketService extends Service{
     public IBinder onBind(Intent intent) {
         username = intent.getStringExtra("username");
         channel = intent.getStringExtra("channel");
+
         System.out.println(username);
         System.out.println(channel);
 
@@ -80,6 +86,7 @@ public class SocketService extends Service{
             @Override
             public void run() {
                 if (!isConnected) { // 연결이 안되었을 때
+                    mSocket.close();
                     mCallback.recvData("Connection Fail");
                 }
             }
@@ -87,6 +94,11 @@ public class SocketService extends Service{
 
         gameManager = new GameManager(); // 게임매니저 선언
         return mBinder;
+    }
+
+    @Override
+    public void onDestroy() {
+        mSocket.close();
     }
 
     public interface ICallback { // Activity로부터 함수를 호출받을 수 있는 Callback
@@ -103,6 +115,7 @@ public class SocketService extends Service{
         switch (message) {
             case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
                 mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
+                mSocket.close();
                 break;
         }
 
@@ -111,13 +124,17 @@ public class SocketService extends Service{
     public void proccessResponse(String response) { // SocketServer로부터 명령을 받음
         if(response.equals("Server Connection")) { // Server와 연결되었을 때
             isConnected = true; // 연결됨
-
         }
         String[] messages = response.split(" ");
         switch (messages[0]) {
             case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
                 this.username = messages[1];
                 this.channel = messages[2];
+
+                mCallback.recvData("Username "+username);
+                mCallback.recvData("Channel "+channel);
+                mCallback.recvData("Room Connected");
+
                 break;
 
             case "Set" : // 게임이 시작되었을 때 (자신의 정보를 모두 저장)
@@ -149,7 +166,12 @@ public class SocketService extends Service{
                 } else { // 기본적으로
                     gameManager.setAttackCount(4); // attackCount는 4
                 }
-
+            case "Error" :
+                if(messages[1].equals("1001")) { // 서버 동접 수용 인원 다 참
+                    mCallback.recvData("Server Full");
+                } else if(messages[1].equals("1002")) { // 방 인원 다 참
+                    mCallback.recvData("Room Full");
+                }
         }
     }
 
@@ -157,5 +179,4 @@ public class SocketService extends Service{
         return START_STICKY;
     }
 
-    // mCallback.recvData();
 }

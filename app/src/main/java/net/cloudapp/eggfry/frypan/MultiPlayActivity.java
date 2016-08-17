@@ -23,6 +23,9 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private int selectedChannel = 1;
 
+    private String username;
+    private int channel;
+
     private int progressStatus = 0;
     private Handler handler = new Handler();
 
@@ -32,6 +35,7 @@ public class MultiPlayActivity extends AppCompatActivity {
     private ProgressDialog loadingDialog;
 
     private SocketService mService;
+    private Intent intent;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) { // 서비스와 연결되었을 때
@@ -48,7 +52,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
-            if(message.equals("Connection Fail")) {
+            String[] messages = message.split(" ");
+            if(message.equals("Connection Fail")) { // 연결 안됨
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -59,8 +64,44 @@ public class MultiPlayActivity extends AppCompatActivity {
                 });
                 alert.setMessage("네트워크 문제로 연결할 수 없습니다.");
                 alert.show();
-                unbindService(mConnection);
+                stopService(intent);
+            } else if(message.equals("Room Connected")) { // 방에 연결
+                loadingDialog.dismiss();
+                Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
+                it.putExtra("username", username);
+                it.putExtra("channel", channel);
+                startActivity(it);
+            } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
+                loadingDialog.dismiss();
+                AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();     //닫기
+                    }
+                });
+                alert.setMessage("서버가 가득 찼습니다. 잠시 후 시도해주세요.");
+                alert.show();
+                stopService(intent);
+            } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
+                loadingDialog.dismiss();
+                AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
+                alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();     //닫기
+                    }
+                });
+                alert.setMessage("채널이 가득 찼습니다. 다른 방으로 시도해주세요.");
+                alert.show();
+                stopService(intent);
             }
+            else if(messages[0].equals("Username")) { // Username 설정
+                username = messages[1];
+            } else if(messages[0].equals("Channel")) { // Channel 설정
+                channel = Integer.parseInt(messages[1]);
+            }
+
         }
     };
 
@@ -91,7 +132,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 mService.myServiceFunc("Cancel");
                 dialog.dismiss();
-                unbindService(mConnection);
+                stopService(intent);
             }
         });
         loadingDialog.show();
@@ -120,7 +161,7 @@ public class MultiPlayActivity extends AppCompatActivity {
                 // Cancel 누르면 NullPointerException
                 mService.myServiceFunc("Cancel");
                 dialogInterface.dismiss();
-                unbindService(mConnection);
+                stopService(intent);
             }
         });
         builder.setCancelable(false);
@@ -131,10 +172,10 @@ public class MultiPlayActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
         String username = sp.getString("id", "");
 
-        Intent it = new Intent(this, SocketService.class);
-        it.putExtra("username", username);
-        it.putExtra("channel", channel);
+        intent = new Intent(this, SocketService.class);
+        intent.putExtra("username", username);
+        intent.putExtra("channel", channel);
 
-        bindService(it, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 }
