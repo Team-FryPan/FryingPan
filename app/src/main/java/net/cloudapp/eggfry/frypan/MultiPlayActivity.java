@@ -16,9 +16,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.NumberPicker;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.ArrayList;
 
 public class MultiPlayActivity extends AppCompatActivity {
+    private SoundManager soundManager;
+
     private static final int CHANNEL_NUM = 60;      // 채널 갯수
 
     private int selectedChannel = 1;
@@ -26,7 +30,6 @@ public class MultiPlayActivity extends AppCompatActivity {
     private String username;
     private int channel;
 
-    private SoundManager soundManager;
     private int progressStatus = 0;
     private Handler handler = new Handler();
 
@@ -51,9 +54,11 @@ public class MultiPlayActivity extends AppCompatActivity {
         }
     };
 
+
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
             String[] messages = message.split(" ");
+
             if(message.equals("Connection Fail")) { // 연결 안됨
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
@@ -65,13 +70,18 @@ public class MultiPlayActivity extends AppCompatActivity {
                 });
                 alert.setMessage("네트워크 문제로 연결할 수 없습니다.");
                 alert.show();
-                stopService(intent);
+                unbindService(mConnection);
+
             } else if(message.equals("Room Connected")) { // 방에 연결
                 loadingDialog.dismiss();
-                Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
-                it.putExtra("username", username);
-                it.putExtra("channel", channel);
-                startActivity(it);
+                if(!WaitingRoomActivity.isActive) {
+                    Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
+                    it.putExtra("username", username);
+                    it.putExtra("channel", channel);
+                    it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(it);
+                }
+
             } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
@@ -83,7 +93,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 });
                 alert.setMessage("서버가 가득 찼습니다. 잠시 후 시도해주세요.");
                 alert.show();
-                stopService(intent);
+                unbindService(mConnection);
+
             } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
@@ -95,7 +106,7 @@ public class MultiPlayActivity extends AppCompatActivity {
                 });
                 alert.setMessage("채널이 가득 찼습니다. 다른 방으로 시도해주세요.");
                 alert.show();
-                stopService(intent);
+                unbindService(mConnection);
             }
             else if(messages[0].equals("Username")) { // Username 설정
                 username = messages[1];
@@ -111,16 +122,23 @@ public class MultiPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
 
+        setSound();
         // 1 ~ CHANNEL_NUM까지 배열에 담음
         for(int i=1; i<=CHANNEL_NUM; i++) {
             channelList.add(i);
         }
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
+
+        BusProvider.getInstance().register(this);
+
     }
 
     public void onRandomBtnClicked(View v) {
         // 로딩 빙글빙글
+
+        soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
 
         loadingDialog = new ProgressDialog(MultiPlayActivity.this);
         loadingDialog.setMessage("적절한 방을 찾는 중입니다...");
@@ -130,15 +148,17 @@ public class MultiPlayActivity extends AppCompatActivity {
         loadingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mService.myServiceFunc("Cancel");
                 dialog.dismiss();
-                stopService(intent);
+                unbindService(mConnection);
             }
         });
         loadingDialog.show();
     }
 
     public void onSelectBtnClicked(View v) {
+
+        soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
 
         final NumberPicker numberPicker = new NumberPicker(this);
         numberPicker.setMinValue(1);
@@ -159,9 +179,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Cancel 누르면 NullPointerException
-                mService.myServiceFunc("Cancel");
                 dialogInterface.dismiss();
-                stopService(intent);
             }
         });
         builder.setCancelable(false);
@@ -175,7 +193,27 @@ public class MultiPlayActivity extends AppCompatActivity {
         intent = new Intent(this, SocketService.class);
         intent.putExtra("username", username);
         intent.putExtra("channel", channel);
-
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    public void setSound() {
+        soundManager = new SoundManager(this);
+
+        soundManager.loadSound("click", R.raw.buttonclicked);
+    }
+
+    @Override
+    protected void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void FinishLoad(PushEvent mPushEvent) {
+        if(mPushEvent.getString().equals("Destroy")) {
+            unbindService(mConnection);
+            stopService(intent);
+        }
     }
 }

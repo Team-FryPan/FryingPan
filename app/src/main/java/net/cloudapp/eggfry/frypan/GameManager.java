@@ -15,7 +15,7 @@ public class GameManager {
     private int attackCount = -1; // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
 
     private Timer timer = new Timer(); // 타이머(60초마다 SpeedUp)
-    private int speedLevel = 1;
+    private int speedLevel = 1; // (speedLevel-1)*0.1+1을 계속 곱해줘서 스피드를 맞춤
     private long timeCount=0; // 게임이 시작되면 timeCount를 100millis마다 작동
 
     public int[] getScore() {
