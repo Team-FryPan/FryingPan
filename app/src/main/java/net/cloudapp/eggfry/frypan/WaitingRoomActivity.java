@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 public class WaitingRoomActivity extends AppCompatActivity {
 
@@ -39,8 +40,11 @@ public class WaitingRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_room);
 
+        Intent recvIntent = getIntent();
+
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(recvIntent.getStringExtra("channel") + "번 채널");
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
@@ -48,5 +52,10 @@ public class WaitingRoomActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, SocketService.class);
         bindService(intent, mConnection, Context.BIND_NOT_FOREGROUND);
+    }
+
+    // 준비 버튼 처리
+    public void onReadyBtnClicked(View v) {
+
     }
 }
