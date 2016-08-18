@@ -141,6 +141,7 @@ public class SocketService extends Service{
                 mCallback.recvData("Username "+username);
                 mCallback.recvData("Channel "+channel);
                 mCallback.recvData("Room Connected");
+                System.out.println("Connect");
 
                 break;
 

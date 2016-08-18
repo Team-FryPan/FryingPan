@@ -25,6 +25,7 @@ public class SoundManager {
         sounds.put(name, soundPool.load(context, resid, 1));
     }
 
+
     public void playSound(String string) { // 자주 쓰이는 소리 재생
         if(isEnabled) {
             int sound = sounds.get(string);

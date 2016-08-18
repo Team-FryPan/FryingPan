@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     private LoginDialog loginDialog;
     public static BackGroundMusicManager bgmManager;
     private SoundManager soundManager;
+
     public void setSound() {
         soundManager = new SoundManager(this);
 
@@ -57,24 +58,28 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     public void onPlayBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         Intent it = new Intent(this, MultiPlayActivity.class);
         startActivity(it);
     }
 
     public void onHowToBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         Intent it = new Intent(this, WaitingRoomActivity.class);
         startActivity(it);
     }
 
     public void onDevInfoBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         Intent it = new Intent(this, DevInfoActivity.class);
         startActivity(it);
     }
 
     public void onExitBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         bgmManager.stop();
         finish();
     }
