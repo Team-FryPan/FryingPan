@@ -84,7 +84,6 @@ public class SocketService extends Service{
         System.out.println(channel);
 
         mSocket.connect();
-        mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
         mSocket.on("disconnected", onDisconnected);
 
@@ -95,6 +94,9 @@ public class SocketService extends Service{
                 if (!isConnected) { // 연결이 안되었을 때
                     mSocket.close();
                     mCallback.recvData("Connection Fail");
+                }
+                else {
+                    mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
                 }
             }
         }, 3000);
@@ -108,8 +110,9 @@ public class SocketService extends Service{
         mSocket.close();
     }
 
-    public interface ICallback { // Activity로부터 함수를 호출받을 수 있는 Callback
-        public void recvData(String string);
+    // Activity로부터 함수를 호출받을 수 있는 Callback
+    public interface ICallback {
+        void recvData(String string);
     }
 
     private ICallback mCallback;
@@ -118,11 +121,16 @@ public class SocketService extends Service{
         mCallback=cb;
     }
 
-    public void myServiceFunc(String message) { // Activity로부터 메세지를 받음
+    // Activity로부터 메세지를 받음
+    public void myServiceFunc(String message) {
         switch (message) {
             case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
                 mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
                 mSocket.close();
+                break;
+
+            case "Ready":
+                mSocket.emit("fromClient", "Ready");
                 break;
         }
 
