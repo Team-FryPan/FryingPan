@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     public void onHowToBtnClicked(View v) {
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
-        Intent it = new Intent(this, HowToActivity.class);
+        Intent it = new Intent(this, GameActivity.class);
         startActivity(it);
     }
 

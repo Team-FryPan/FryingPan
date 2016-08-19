@@ -28,6 +28,7 @@ public class SoundManager {
 
     public void playSound(String string) { // 자주 쓰이는 소리 재생
         if(isEnabled) {
+            // 안드로이드 4.4에서 테스트 시 NullPointerException(Lollipop에선 안떴음)
             int sound = sounds.get(string);
             soundPool.play(sound, 50, 50, 1, 0, 1f);
         }
