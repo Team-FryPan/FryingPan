@@ -14,8 +14,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 
+import com.bumptech.glide.Glide;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -55,6 +58,15 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
+            Button b1 = (Button)findViewById(R.id.random_btn);
+            Button b2 = (Button)findViewById(R.id.select_btn);
+
+            b1.setBackgroundResource(R.drawable.egg1);
+            b2.setBackgroundResource(R.drawable.egg1);
+
+            b1.setText("랜덤");
+            b2.setText("선택");
+
             String[] messages = message.split(" ");
             if(message.equals("Connection Fail")) { // 연결 안됨
                 loadingDialog.dismiss();
@@ -124,6 +136,9 @@ public class MultiPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
 
+        ImageView fryPan = (ImageView)findViewById(R.id.frypan_img);
+        Glide.with(this).load(R.drawable.pan).into(fryPan);
+
         setSound();
         // 1 ~ CHANNEL_NUM까지 배열에 담음
         for(int i=1; i<=CHANNEL_NUM; i++) {
@@ -141,6 +156,22 @@ public class MultiPlayActivity extends AppCompatActivity {
     public void onRandomBtnClicked(View v) {
         // 로딩 빙글빙글
 
+        final Button b = (Button)findViewById(R.id.random_btn);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.egg2);
+                b.setText("");
+            }
+        }, 400);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.eggfry);
+            }
+        }, 800);
+
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
 
@@ -153,6 +184,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                b.setBackgroundResource(R.drawable.egg1);
                 unbindService(mConnection);
                 stopService(intent);
             }
@@ -162,6 +194,22 @@ public class MultiPlayActivity extends AppCompatActivity {
     }
 
     public void onSelectBtnClicked(View v) {
+
+        final Button b = (Button)findViewById(R.id.select_btn);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.egg2);
+                b.setText("");
+            }
+        }, 400);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.eggfry);
+            }
+        }, 800);
 
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
@@ -184,10 +232,8 @@ public class MultiPlayActivity extends AppCompatActivity {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // Cancel 누르면 NullPointerException
                 dialogInterface.dismiss();
-                unbindService(mConnection);
-                stopService(intent);
+                b.setBackgroundResource(R.drawable.egg1);
             }
         });
         builder.setCancelable(false);

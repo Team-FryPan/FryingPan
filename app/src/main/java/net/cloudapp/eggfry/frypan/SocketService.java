@@ -84,7 +84,6 @@ public class SocketService extends Service{
         System.out.println(channel);
 
         mSocket.connect();
-        mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
         mSocket.on("disconnected", onDisconnected);
 
@@ -144,6 +143,7 @@ public class SocketService extends Service{
         String[] messages = response.split(" ");
         switch (messages[0]) {
             case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
+                System.out.println("353");
                 this.username = messages[1];
                 this.channel = messages[2];
 
@@ -158,9 +158,9 @@ public class SocketService extends Service{
                 if(messages[1].equals(username)) {
                     gameManager.setNickNum(Integer.parseInt(messages[2]));
                     gameManager.setUserNum(Integer.parseInt(messages[3]));
+                    mCallback.recvData("Set");
                 }
                 gameManager.startTimer();
-                mCallback.recvData("Set");
 
                 break;
 
