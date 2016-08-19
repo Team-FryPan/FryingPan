@@ -84,6 +84,7 @@ public class SocketService extends Service{
         System.out.println(channel);
 
         mSocket.connect();
+        mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
         mSocket.on("disconnected", onDisconnected);
 
@@ -149,7 +150,6 @@ public class SocketService extends Service{
                 mCallback.recvData("Username "+username);
                 mCallback.recvData("Channel "+channel);
                 mCallback.recvData("Room Connected");
-                System.out.println("Connect");
 
                 break;
 

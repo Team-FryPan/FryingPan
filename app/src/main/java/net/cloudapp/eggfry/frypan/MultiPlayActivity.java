@@ -106,13 +106,14 @@ public class MultiPlayActivity extends AppCompatActivity {
                 unbindService(mConnection);
                 stopService(intent);
 
-            }
-            else if(messages[0].equals("Username")) { // Username 설정
+            } else if(messages[0].equals("Username")) { // Username 설정
                 username = messages[1];
 
             } else if(messages[0].equals("Channel")) { // Channel 설정
                 channel = Integer.parseInt(messages[1]);
 
+            } else if(messages[0].equals("Set")) { // 게임 시작
+                BusProvider.getInstance().post(new PushEvent("Set"));
             }
 
         }

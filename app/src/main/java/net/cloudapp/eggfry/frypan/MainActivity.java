@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
 
         }
 
+        // 소리 세팅
         bgmManager = new BackGroundMusicManager(this, R.raw.opening);
         soundManager = new SoundManager(this);
         setSound();
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
                 bgmManager.play();
             }
         }, 3000);
+
+
+
 
     }
 
