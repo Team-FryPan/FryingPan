@@ -134,6 +134,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     }
 
+
+    // 버튼 처리
     public void onRandomBtnClicked(View v) {
         // 로딩 빙글빙글
 
@@ -186,6 +188,7 @@ public class MultiPlayActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    // 소켓
     public void setSocketServiceConnection(String channel) {
         SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
         String username = sp.getString("id", "");
@@ -194,9 +197,9 @@ public class MultiPlayActivity extends AppCompatActivity {
         intent.putExtra("username", username);
         intent.putExtra("channel", channel);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
     }
 
+    // 음향
     public void setSound() {
         soundManager = new SoundManager(this);
 

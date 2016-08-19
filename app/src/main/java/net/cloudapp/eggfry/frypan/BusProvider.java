@@ -5,6 +5,7 @@ import com.squareup.otto.Bus;
 /**
  * Created by user on 2016-08-18.
  */
+
 public final class BusProvider {
     private static final Bus ourInstance = new Bus();
 

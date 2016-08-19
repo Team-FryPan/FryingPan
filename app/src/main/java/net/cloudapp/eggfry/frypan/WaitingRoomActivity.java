@@ -1,5 +1,6 @@
 package net.cloudapp.eggfry.frypan;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,9 @@ public class WaitingRoomActivity extends AppCompatActivity {
 
         isActive = true;
 
+        Intent recvIntent = getIntent();
+
+        // 툴바 설정
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(recvIntent.getStringExtra("channel") + "번 채널");
