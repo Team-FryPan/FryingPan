@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         finish();
     }
 
-
-
     // 로그인 http 통신 처리
     public void processFinish(String output) {
         String[] messages = output.split("\n");
@@ -124,4 +122,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
                 break;
         }
     }
+
+
 }

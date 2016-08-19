@@ -15,18 +15,10 @@ public class SoundManager {
     private SoundPool soundPool; // Sound가 로딩될 풀
     private HashMap<String, Integer> sounds = new HashMap<>(); // 파일명과 resId로 HashMap
     private HashMap<String, Integer> maps = new HashMap<>(); // 파일명과 resId로 HasnMap(원본 resId)
-    private boolean isEnabled = false; // 소리 재생 가능인지
 
     public SoundManager(Context context) { // 기본적으로 많이 쓰이는 소리 세팅
         soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         this.context = context;
-        isEnabled = true;
-//        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() { // 자주 쓰이는 소리가 아니라면
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//
-//            }
-//        });
     }
     public void loadSound(String name) {
         sounds.put(name, soundPool.load(context, maps.get(name), 1));
@@ -37,13 +29,7 @@ public class SoundManager {
     }
 
     public void playSound(String string) { // 자주 쓰이는 소리 재생
-        if(isEnabled) {
-            int sound = sounds.get(string);
-            soundPool.play(sound, 100, 100, 1, 0, 1f);
-        }
-    }
-
-    public void enableSound(boolean isEnabled) {
-        this.isEnabled = isEnabled;
+        int sound = sounds.get(string);
+        soundPool.play(sound, 100, 100, 1, 0, 1f);
     }
 }

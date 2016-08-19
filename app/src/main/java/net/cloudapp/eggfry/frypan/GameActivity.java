@@ -92,6 +92,13 @@ public class GameActivity extends AppCompatActivity {
         return number_string;
     }
 
+    /**
+     *
+     * @param initialTime 초기 딜레이 시간
+     * @param speed 스피드(0부터 1까지의 값)
+     * @param fruit 과일 이름
+     * @param number 수행 갯수
+     */
     public void playSound(int initialTime, float speed, final String fruit, int number) {
 
         Handler handler = new Handler();
@@ -135,7 +142,10 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        MainActivity.bgmManager.stop();
         setSound();
+
         BusProvider.getInstance().register(this);
     }
 

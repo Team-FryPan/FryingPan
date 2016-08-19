@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 
@@ -61,11 +62,8 @@ public class MultiPlayActivity extends AppCompatActivity {
             Button b1 = (Button)findViewById(R.id.random_btn);
             Button b2 = (Button)findViewById(R.id.select_btn);
 
-            b1.setBackgroundResource(R.drawable.egg1);
-            b2.setBackgroundResource(R.drawable.egg1);
-
-            b1.setText("랜덤");
-            b2.setText("선택");
+            b1.setBackgroundResource(R.drawable.egg_random);
+            b2.setBackgroundResource(R.drawable.egg_select);
 
             String[] messages = message.split(" ");
             if(message.equals("Connection Fail")) { // 연결 안됨
@@ -136,8 +134,8 @@ public class MultiPlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
 
-        ImageView fryPan = (ImageView)findViewById(R.id.frypan_img);
-        Glide.with(this).load(R.drawable.pan).into(fryPan);
+        ImageView bg = (ImageView)findViewById(R.id.bg_multi_play);
+        Glide.with(this).load(R.drawable.bg_select).into(bg);
 
         setSound();
         // 1 ~ CHANNEL_NUM까지 배열에 담음
@@ -156,13 +154,12 @@ public class MultiPlayActivity extends AppCompatActivity {
     public void onRandomBtnClicked(View v) {
         // 로딩 빙글빙글
 
-        final Button b = (Button)findViewById(R.id.random_btn);
+        final ImageButton b = (ImageButton)findViewById(R.id.random_btn);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 b.setBackgroundResource(R.drawable.egg2);
-                b.setText("");
             }
         }, 400);
         handler.postDelayed(new Runnable() {
@@ -184,7 +181,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                b.setBackgroundResource(R.drawable.egg1);
+                b.setBackgroundResource(R.drawable.egg_random);
                 unbindService(mConnection);
                 stopService(intent);
             }
@@ -195,13 +192,12 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     public void onSelectBtnClicked(View v) {
 
-        final Button b = (Button)findViewById(R.id.select_btn);
+        final ImageButton b = (ImageButton)findViewById(R.id.select_btn);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 b.setBackgroundResource(R.drawable.egg2);
-                b.setText("");
             }
         }, 400);
         handler.postDelayed(new Runnable() {
@@ -233,7 +229,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                b.setBackgroundResource(R.drawable.egg1);
+                b.setBackgroundResource(R.drawable.egg_select);
             }
         });
         builder.setCancelable(false);
