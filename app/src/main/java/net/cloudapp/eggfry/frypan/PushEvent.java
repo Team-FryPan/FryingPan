@@ -7,7 +7,7 @@ public class PushEvent {
     private String string;
 
     public PushEvent(String str) {
-       this.string = str;
+        this.string = str;
     }
 
     public String getString() {

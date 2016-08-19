@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity implements HttpResponse{
 
@@ -16,8 +19,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     public static SoundManager soundManager;
     public void setSound() {
         soundManager = new SoundManager(this);
-
-        soundManager.loadSound("click", R.raw.buttonclicked); 
+        soundManager.loadSound("click", R.raw.buttonclicked);
 
         bgmManager = new BackGroundMusicManager(this, R.raw.opening);
         bgmManager.play();
@@ -27,6 +29,10 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 배경 이미지
+        ImageView bgView = (ImageView)findViewById(R.id.main_bg);
+        Glide.with(this).load(R.drawable.bg).into(bgView);
 
         SharedPreferences sp = getSharedPreferences("login_info", MODE_PRIVATE);
 
@@ -54,13 +60,13 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
             }
         }, 3000);
 
-
-
-
     }
 
+
+    // 버튼 처리
     public void onPlayBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         Intent it = new Intent(this, MultiPlayActivity.class);
         startActivity(it);
     }
@@ -73,28 +79,22 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     public void onDevInfoBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         Intent it = new Intent(this, DevInfoActivity.class);
         startActivity(it);
     }
 
     public void onExitBtnClicked(View v) {
         soundManager.playSound("click");
+        soundManager.loadSound("click", R.raw.buttonclicked);
         bgmManager.stop();
         finish();
     }
 
-    public void onSoundToggleClicked(View v) { // SoundToggle이 클릭되었을 때
-        if(((ToggleButton)v).isChecked()) {
-            bgmManager.play();
-            soundManager.enableSound(true);
-        } else {
-            bgmManager.stop();
-            soundManager.enableSound(false);
-        }
-    }
 
 
-    public void processFinish(String output) { // 로그인 http 통신 처리
+    // 로그인 http 통신 처리
+    public void processFinish(String output) {
         String[] messages = output.split("\n");
         switch(messages[3]) {
             case "Success" : // 성공 메세지
