@@ -55,4 +55,15 @@ public class ResultDialog extends Dialog {
         }
         listView.setAdapter(arrayAdapter);
     }
+
+//    public void processFinish(String output) {
+//        switch(output) {
+//            case "Success" :
+//                break;
+//            case "TryAgain" :
+//                Toast.makeText(this, )
+//                break;
+//            case ""
+//        }
+//    }
 }
