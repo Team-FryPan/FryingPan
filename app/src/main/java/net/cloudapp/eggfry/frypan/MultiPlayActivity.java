@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -59,11 +58,22 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
-            Button b1 = (Button)findViewById(R.id.random_btn);
-            Button b2 = (Button)findViewById(R.id.select_btn);
 
-            b1.setBackgroundResource(R.drawable.egg_random);
-            b2.setBackgroundResource(R.drawable.egg_select);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable(){
+                        @Override
+                        public void run() {
+                            ImageButton b1 = (ImageButton)findViewById(R.id.random_btn);
+                            ImageButton b2 = (ImageButton)findViewById(R.id.select_btn);
+
+                            b1.setBackgroundResource(R.drawable.egg_random);
+                            b2.setBackgroundResource(R.drawable.egg_select);
+                        }
+                    });
+                }
+            }).start();
 
             String[] messages = message.split(" ");
             if(message.equals("Connection Fail")) { // 연결 안됨
@@ -125,6 +135,10 @@ public class MultiPlayActivity extends AppCompatActivity {
 
             } else if(messages[0].equals("Set")) { // 게임 시작
                 BusProvider.getInstance().post(new PushEvent("Set"));
+            } else if(messages[0].equals("Ready")) {
+                BusProvider.getInstance().post(new PushEvent(message));
+            } else if(messages[0].equals("Cancel")) {
+                BusProvider.getInstance().post(new PushEvent(message));
             }
 
         }
@@ -268,8 +282,12 @@ public class MultiPlayActivity extends AppCompatActivity {
         if(mPushEvent.getString().equals("Destroy")) {
             unbindService(mConnection);
             stopService(intent);
-        } else if(mPushEvent.getString().equals("Ready")) {
+        } else if(mPushEvent.getString().equals("ReadyButton")) {
             mService.myServiceFunc("Ready");
+        } else if(mPushEvent.getString().equals("CancelButton")) {
+            mService.myServiceFunc("Cancel");
+        } else if(mPushEvent.getString().equals("ReadyRequest")) {
+            mService.myServiceFunc("ReadyRequest");
         }
     }
 }

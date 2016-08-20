@@ -44,6 +44,7 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String responseString = address+"\n"+userName+"\n"+password;
+        System.out.println(responseString);
         try {
             URL url = new URL(address);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -103,6 +104,7 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
+        System.out.println(s);
         httpResponse.processFinish(s);
     }
 }

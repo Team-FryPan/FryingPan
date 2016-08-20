@@ -8,7 +8,7 @@ import java.util.TimerTask;
  */
 public class GameManager {
 
-    private String[] arr_nickname = {"키위", "레몬", "사과", "수박"};
+    private final String[] arr_nickname = {"키위", "레몬", "사과", "수박"};
     private int[] score = new int[4]; // nickNum번째 score이 자신의 score
     private int userNum = -1; // 유저의 고유번호(0번부터 999번)
     private int nickNum = -1; // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
@@ -52,6 +52,10 @@ public class GameManager {
 
     public void setAttackCount(int attackCount) {
         this.attackCount = attackCount;
+    }
+
+    public String[] getArr_nickname() {
+        return arr_nickname;
     }
 
     public void startTimer() {

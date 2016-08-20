@@ -1,5 +1,7 @@
 package net.cloudapp.eggfry.frypan;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,20 +10,55 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
 
 public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     private LoginDialog loginDialog;
+
+    public static final String VERSION = "0.6";
+
     public static BackGroundMusicManager bgmManager;
     public static SoundManager soundManager;
+
     public void setSound() {
         soundManager = new SoundManager(this);
         soundManager.loadSound("click", R.raw.buttonclicked);
 
         bgmManager = new BackGroundMusicManager(this, R.raw.opening);
+    }
+
+    public void showDevinfoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
+        builder.setTitle("게임 정보")        // 제목 설정
+                .setMessage("버전 : "+VERSION+"\n총괄 : 이지호\n개발자 : 이지호\n개발자 : 신원준\n디자인 : 강지훈")        // 메세지 설정
+                .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    // 확인 버튼 클릭시 설정
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
+    }
+
+    public void showHowtoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
+        builder.setTitle("설명")        // 제목 설정
+                .setMessage("흔히 즐겨하는 후라이팬 놀이입니다. \n팅팅탱탱 박자에 맞춰서 버튼을 누르면 됩니다.\n(단, 한번 틀리면 패배하니 주의하세요)\n자, 그럼 친구 혹은 다른 유저들과 리듬에 몸을 맡겨보세요!!")        // 메세지 설정
+                .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    // 확인 버튼 클릭시 설정
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();    // 알림창 객체 생성
+        dialog.show();    // 알림창 띄우기
     }
 
     @Override
@@ -73,15 +110,13 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     public void onHowToBtnClicked(View v) {
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
-        Intent it = new Intent(this, HowToActivity.class);
-        startActivity(it);
+        showHowtoDialog();
     }
 
     public void onDevInfoBtnClicked(View v) {
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
-        Intent it = new Intent(this, DevInfoActivity.class);
-        startActivity(it);
+        showDevinfoDialog();
     }
 
     public void onExitBtnClicked(View v) {
@@ -90,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         bgmManager.stop();
         finish();
     }
-
-
 
     // 로그인 http 통신 처리
     public void processFinish(String output) {
