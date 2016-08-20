@@ -23,12 +23,6 @@
         <activity
             android:name=".MultiPlayActivity"
             android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".HowToActivity"
-            android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name=".DevInfoActivity"
-            android:theme="@style/FullscreenTheme" />
 
         <service
             android:name=".SocketService"

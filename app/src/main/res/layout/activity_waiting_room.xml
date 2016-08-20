@@ -16,32 +16,47 @@
         android:titleTextColor="@android:color/white">
 
     </android.support.v7.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal">
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#FFFF00">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFF00">
+            </ImageView>
+            <ImageView
+                android:id="@+id/icon_1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/apple"
+                android:alpha="0.3">
+            </ImageView>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#00FFFF">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"/>
-        </RelativeLayout>
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#00FFFF">
+            </ImageView>
+            <ImageView
+                android:id="@+id/icon_2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/watermelon"
+                android:alpha="0.3">
+            </ImageView>
+        </FrameLayout>
 
     </LinearLayout>
     <LinearLayout
@@ -49,28 +64,44 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="horizontal">
-        <RelativeLayout
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#FF00FF">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF00FF">
+            </ImageView>
+            <ImageView
+                android:id="@+id/icon_3"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/kiwi"
+                android:alpha="0.3">
+            </ImageView>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#F0F0FF">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"/>
-        </RelativeLayout>
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F0F0FF">
+            </ImageView>
+            <ImageView
+                android:id="@+id/icon_4"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center"
+                android:background="@drawable/lemon"
+                android:alpha="0.3">
+            </ImageView>
+        </FrameLayout>
     </LinearLayout>
-    <Button
+    <ToggleButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -78,7 +109,8 @@
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:text="준비!"
-        android:onClick="onReadyBtnClicked"/>
+        android:textOn="취소"
+        android:textOff="준비!"
+        android:id="@+id/ready_btn" />
 
 </LinearLayout>

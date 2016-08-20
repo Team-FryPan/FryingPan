@@ -49,6 +49,9 @@ public class HttpRequest {
         sb.append(map.get("fileName"));
         sb.append("?");
         for( String key : map.keySet()){
+            if(key.equals("fileName")) {
+                continue;
+            }
             sb.append(key)
                     .append("=")
                     .append(map.get(key))

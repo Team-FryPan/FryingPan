@@ -51,21 +51,6 @@ public class SocketService extends Service{
         }
     };
 
-    // Web Socket으로부터 Message 받기
-    private Emitter.Listener onDisconnected = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    System.out.println((String)args[0]);
-                    proccessResponse((String)args[0]);
-                }
-            }).start();
-        }
-    };
-
     public class mBinder extends Binder {
         SocketService getService() {
             return SocketService.this;
@@ -85,7 +70,6 @@ public class SocketService extends Service{
 
         mSocket.connect();
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
-        mSocket.on("disconnected", onDisconnected);
 
         Handler mHandler = new Handler(Looper.getMainLooper());
         mHandler.postDelayed(new Runnable() {
@@ -126,12 +110,16 @@ public class SocketService extends Service{
         switch (message) {
             case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
                 mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
-                mSocket.close();
                 break;
 
             case "Ready":
                 mSocket.emit("fromClient", "Ready");
                 break;
+
+            case "ReadyRequest":
+                mSocket.emit("fromClient", "ReadyRequest");
+                break;
+
         }
 
     }
@@ -143,13 +131,22 @@ public class SocketService extends Service{
         String[] messages = response.split(" ");
         switch (messages[0]) {
             case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
-                System.out.println("353");
                 this.username = messages[1];
                 this.channel = messages[2];
 
                 mCallback.recvData("Username "+username);
                 mCallback.recvData("Channel "+channel);
                 mCallback.recvData("Room Connected");
+
+                break;
+
+            case "Ready" : // 레디를 눌렀을 때
+                mCallback.recvData(response);
+
+                break;
+
+            case "Cancel" : // Cancel을 눌렀을 때
+                mCallback.recvData(response);
 
                 break;
 
