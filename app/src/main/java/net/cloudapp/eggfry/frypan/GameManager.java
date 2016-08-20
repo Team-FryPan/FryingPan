@@ -59,7 +59,7 @@ public class GameManager {
             @Override
             public void run() {
                 timeCount++;
-                if(timeCount%600==0) {
+                if(timeCount%200==0) { // 20초마다
                     speedLevel++;
                 }
             }

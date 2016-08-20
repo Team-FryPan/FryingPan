@@ -14,27 +14,22 @@ public class SoundManager {
     private Context context;
     private SoundPool soundPool; // Sound가 로딩될 풀
     private HashMap<String, Integer> sounds = new HashMap<>(); // 파일명과 resId로 HashMap
-    private boolean isEnabled = true; // 소리 재생 가능인지
+    private HashMap<String, Integer> maps = new HashMap<>(); // 파일명과 resId로 HasnMap(원본 resId)
 
     public SoundManager(Context context) { // 기본적으로 많이 쓰이는 소리 세팅
         soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         this.context = context;
     }
-
-    public void loadSound(String name, int resid) { // 소리들을 로딩
+    public void loadSound(String name) {
+        sounds.put(name, soundPool.load(context, maps.get(name), 1));
+    }
+    public void loadSound(String name, int resid) {
+        maps.put(name, resid);
         sounds.put(name, soundPool.load(context, resid, 1));
     }
 
-
     public void playSound(String string) { // 자주 쓰이는 소리 재생
-        if(isEnabled) {
-            // 안드로이드 4.4에서 테스트 시 NullPointerException(Lollipop에선 안떴음)
-            int sound = sounds.get(string);
-            soundPool.play(sound, 50, 50, 1, 0, 1f);
-        }
-    }
-
-    public void enableSound(boolean isEnabled) {
-        this.isEnabled = isEnabled;
+        int sound = sounds.get(string);
+        soundPool.play(sound, 100, 100, 1, 0, 1f);
     }
 }

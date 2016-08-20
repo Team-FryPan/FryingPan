@@ -14,15 +14,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 
+import com.bumptech.glide.Glide;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
 public class MultiPlayActivity extends AppCompatActivity {
-    private SoundManager soundManager;
-
     private static final int CHANNEL_NUM = 60;      // 채널 갯수
 
     private int selectedChannel = 1;
@@ -30,6 +32,7 @@ public class MultiPlayActivity extends AppCompatActivity {
     private String username;
     private int channel;
 
+    private SoundManager soundManager;
     private int progressStatus = 0;
     private Handler handler = new Handler();
 
@@ -54,11 +57,15 @@ public class MultiPlayActivity extends AppCompatActivity {
         }
     };
 
-
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
-            String[] messages = message.split(" ");
+            Button b1 = (Button)findViewById(R.id.random_btn);
+            Button b2 = (Button)findViewById(R.id.select_btn);
 
+            b1.setBackgroundResource(R.drawable.egg_random);
+            b2.setBackgroundResource(R.drawable.egg_select);
+
+            String[] messages = message.split(" ");
             if(message.equals("Connection Fail")) { // 연결 안됨
                 if(loadingDialog != null)
                     loadingDialog.dismiss();
@@ -72,16 +79,15 @@ public class MultiPlayActivity extends AppCompatActivity {
                 alert.setMessage("네트워크 문제로 연결할 수 없습니다.");
                 alert.show();
                 unbindService(mConnection);
+                stopService(intent);
 
             } else if(message.equals("Room Connected")) { // 방에 연결
                 loadingDialog.dismiss();
-                if(!WaitingRoomActivity.isActive) {
-                    Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
-                    it.putExtra("username", username);
-                    it.putExtra("channel", channel);
-                    it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(it);
-                }
+                Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
+                it.putExtra("username", username);
+                it.putExtra("channel", channel);
+                it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(it);
 
             } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
                 loadingDialog.dismiss();
@@ -95,6 +101,7 @@ public class MultiPlayActivity extends AppCompatActivity {
                 alert.setMessage("서버가 가득 찼습니다. 잠시 후 시도해주세요.");
                 alert.show();
                 unbindService(mConnection);
+                stopService(intent);
 
             } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
                 loadingDialog.dismiss();
@@ -108,11 +115,16 @@ public class MultiPlayActivity extends AppCompatActivity {
                 alert.setMessage("채널이 가득 찼습니다. 다른 방으로 시도해주세요.");
                 alert.show();
                 unbindService(mConnection);
-            }
-            else if(messages[0].equals("Username")) { // Username 설정
+                stopService(intent);
+
+            } else if(messages[0].equals("Username")) { // Username 설정
                 username = messages[1];
+
             } else if(messages[0].equals("Channel")) { // Channel 설정
                 channel = Integer.parseInt(messages[1]);
+
+            } else if(messages[0].equals("Set")) { // 게임 시작
+                BusProvider.getInstance().post(new PushEvent("Set"));
             }
 
         }
@@ -122,6 +134,9 @@ public class MultiPlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_play);
+
+        ImageView bg = (ImageView)findViewById(R.id.bg_multi_play);
+        Glide.with(this).load(R.drawable.bg_select).into(bg);
 
         setSound();
         // 1 ~ CHANNEL_NUM까지 배열에 담음
@@ -140,6 +155,21 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     public void onRandomBtnClicked(View v) {
 
+        final ImageButton b = (ImageButton)findViewById(R.id.random_btn);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.egg2);
+            }
+        }, 400);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.eggfry);
+            }
+        }, 800);
+
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
 
@@ -153,13 +183,31 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                b.setBackgroundResource(R.drawable.egg_random);
                 unbindService(mConnection);
+                stopService(intent);
             }
         });
         loadingDialog.show();
+
     }
 
     public void onSelectBtnClicked(View v) {
+
+        final ImageButton b = (ImageButton)findViewById(R.id.select_btn);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.egg2);
+            }
+        }, 400);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                b.setBackgroundResource(R.drawable.eggfry);
+            }
+        }, 800);
 
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
@@ -183,6 +231,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
+                b.setBackgroundResource(R.drawable.egg_select);
             }
         });
         builder.setCancelable(false);
@@ -197,6 +246,7 @@ public class MultiPlayActivity extends AppCompatActivity {
         intent = new Intent(this, SocketService.class);
         intent.putExtra("username", username);
         intent.putExtra("channel", channel);
+
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -209,8 +259,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        BusProvider.getInstance().unregister(this);
         super.onDestroy();
+        BusProvider.getInstance().unregister(this);
     }
 
     @Subscribe
@@ -218,6 +268,8 @@ public class MultiPlayActivity extends AppCompatActivity {
         if(mPushEvent.getString().equals("Destroy")) {
             unbindService(mConnection);
             stopService(intent);
+        } else if(mPushEvent.getString().equals("Ready")) {
+            mService.myServiceFunc("Ready");
         }
     }
 }

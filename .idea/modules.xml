@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FryPan.iml" filepath="$PROJECT_DIR$/FryPan.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FryingPan.iml" filepath="$PROJECT_DIR$/FryingPan.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

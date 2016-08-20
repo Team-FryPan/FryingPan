@@ -84,7 +84,6 @@ public class SocketService extends Service{
         System.out.println(channel);
 
         mSocket.connect();
-        mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
         mSocket.on("toClient", onNewMessage); // on으로 메세지를 받음
         mSocket.on("disconnected", onDisconnected);
 
@@ -95,6 +94,9 @@ public class SocketService extends Service{
                 if (!isConnected) { // 연결이 안되었을 때
                     mSocket.close();
                     mCallback.recvData("Connection Fail");
+                }
+                else {
+                    mSocket.emit("fromClient", "Login " + username + " " + channel); // emit 두번째 인자에 메세지를 담음
                 }
             }
         }, 3000);
@@ -110,7 +112,7 @@ public class SocketService extends Service{
 
     // Activity로부터 함수를 호출받을 수 있는 Callback
     public interface ICallback {
-        public void recvData(String string);
+        void recvData(String string);
     }
 
     private ICallback mCallback;
@@ -126,6 +128,10 @@ public class SocketService extends Service{
                 mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
                 mSocket.close();
                 break;
+
+            case "Ready":
+                mSocket.emit("fromClient", "Ready");
+                break;
         }
 
     }
@@ -137,13 +143,13 @@ public class SocketService extends Service{
         String[] messages = response.split(" ");
         switch (messages[0]) {
             case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
+                System.out.println("353");
                 this.username = messages[1];
                 this.channel = messages[2];
 
                 mCallback.recvData("Username "+username);
                 mCallback.recvData("Channel "+channel);
                 mCallback.recvData("Room Connected");
-                System.out.println("Connect");
 
                 break;
 
@@ -152,9 +158,9 @@ public class SocketService extends Service{
                 if(messages[1].equals(username)) {
                     gameManager.setNickNum(Integer.parseInt(messages[2]));
                     gameManager.setUserNum(Integer.parseInt(messages[3]));
+                    mCallback.recvData("Set");
                 }
                 gameManager.startTimer();
-                mCallback.recvData("Set");
 
                 break;
 

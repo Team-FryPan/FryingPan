@@ -1,7 +1,7 @@
 package net.cloudapp.eggfry.frypan;
 
 /**
- * Created by swj on 16. 8. 18..
+ * Created by user on 2016-08-18.
  */
 public class PushEvent {
     private String string;

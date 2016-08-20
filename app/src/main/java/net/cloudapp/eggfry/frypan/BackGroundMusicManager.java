@@ -25,4 +25,5 @@ public class BackGroundMusicManager {
     public void stop() { // 음악 정지
         mediaPlayer.pause();
     }
+
 }
