@@ -11,11 +11,12 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:id="@+id/game_bg"/>
-    <!-- 리듬 표시 영역 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <!-- 리듬 표시 영역 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,79 +52,94 @@
         </LinearLayout>
 
         <!-- User Interaction 영역 -->
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:weightSum="4"
-            android:orientation="vertical"
-            android:gravity="bottom">
-            <!-- 기본 화면 -->
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="3"
-                android:columnCount="3"
-                android:rowCount="3"
-                android:orientation="horizontal">
-                <LinearLayout
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_row="0"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/apple"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="0"
-                    android:layout_row="1"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/lemon"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="2"
-                    android:layout_row="1"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/kiwi"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1"
-                    android:layout_row="2"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/watermelon"/>
-                </LinearLayout>
+            android:orientation="vertical">
 
-            </GridLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="4"
+                android:orientation="vertical"
+                android:gravity="bottom">
+                <!-- 기본 화면 -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:columnCount="3"
+                    android:rowCount="3"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="1"
+                        android:layout_row="0"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/apple"
+                            android:onClick="onUpImgClicked"
+                            android:id="@+id/up_img" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="0"
+                        android:layout_row="1"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/lemon"
+                            android:onClick="onLeftImgClicked"
+                            android:id="@+id/left_img" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="2"
+                        android:layout_row="1"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/kiwi"
+                            android:onClick="onRightImgClicked"
+                            android:id="@+id/right_img" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        android:layout_column="1"
+                        android:layout_row="2"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp">
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/watermelon"
+                            android:id="@+id/bottom_img" />
+                    </LinearLayout>
+
+                </GridLayout>
+
+            </LinearLayout>
 
             <!-- 터치터치 -->
             <LinearLayout
                 android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <!-- 디자인 부탁~ -->
+                android:layout_height="match_parent"
+                android:background="#55000000">
+                <!-- 디자인 부탁~ -->s
             </LinearLayout>
-        </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 </FrameLayout>

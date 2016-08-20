@@ -51,4 +51,12 @@
         android:scaleType="fitXY"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="490dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="In-Game"
+        android:id="@+id/button"
+        android:layout_gravity="left|top"
+        android:onClick="onInGameBtnClicked" />
 </FrameLayout>
