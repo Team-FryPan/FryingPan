@@ -67,7 +67,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
             String[] messages = message.split(" ");
             if(message.equals("Connection Fail")) { // 연결 안됨
-                loadingDialog.dismiss();
+                if(loadingDialog != null)
+                    loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -151,8 +152,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
 
     // 버튼 처리
+
     public void onRandomBtnClicked(View v) {
-        // 로딩 빙글빙글
 
         final ImageButton b = (ImageButton)findViewById(R.id.random_btn);
         Handler handler = new Handler();
@@ -172,6 +173,7 @@ public class MultiPlayActivity extends AppCompatActivity {
         soundManager.playSound("click");
         soundManager.loadSound("click", R.raw.buttonclicked);
 
+        // 로딩 빙글빙글
         loadingDialog = new ProgressDialog(MultiPlayActivity.this);
         loadingDialog.setMessage("적절한 방을 찾는 중입니다...");
         loadingDialog.setCancelable(true);

@@ -1,8 +1,14 @@
 package net.cloudapp.eggfry.frypan;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 public class GameActivity extends AppCompatActivity {
     private SoundManager soundManager;
@@ -147,7 +153,22 @@ public class GameActivity extends AppCompatActivity {
         setSound();
 
         BusProvider.getInstance().register(this);
+
+        ImageView bg = (ImageView)findViewById(R.id.game_bg);
+        ImageView count1 = (ImageView)findViewById(R.id.count1);
+        ImageView count2 = (ImageView)findViewById(R.id.count2);
+        ImageView count3 = (ImageView)findViewById(R.id.count3);
+        ImageView count4 = (ImageView)findViewById(R.id.count4);
+
+        // Image Initialization
+        Glide.with(this).load(R.drawable.in_game_bg).into(bg);
+        Glide.with(this).load(R.drawable.ting).into(count1);
+        Glide.with(this).load(R.drawable.ting).into(count2);
+        Glide.with(this).load(R.drawable.tang).into(count3);
+        Glide.with(this).load(R.drawable.tang).into(count4);
+
     }
+    
 
     @Override
     protected void onDestroy() {

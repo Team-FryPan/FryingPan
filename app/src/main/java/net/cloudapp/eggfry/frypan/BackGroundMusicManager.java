@@ -12,7 +12,9 @@ public class BackGroundMusicManager {
     MediaPlayer mediaPlayer; // 음악 플레이어
 
     public BackGroundMusicManager(Context context, int id) { // 음악 플레이어 생성
+        // 안드로이드 4.4에서 테스트 시 null 값 나옴
         mediaPlayer = MediaPlayer.create(context, id);
+
         mediaPlayer.setLooping(true);
     }
 
