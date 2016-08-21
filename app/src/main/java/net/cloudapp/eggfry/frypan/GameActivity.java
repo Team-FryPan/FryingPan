@@ -3,6 +3,9 @@ package net.cloudapp.eggfry.frypan;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +18,70 @@ public class GameActivity extends AppCompatActivity {
     private static final int INITIALTIME = 3000;
     private static final int DURATION = 1336;
     private static final int DURATION_SMALL = 334;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game);
+
+        MainActivity.bgmManager.stop();
+        setSound();
+
+        BusProvider.getInstance().register(this);
+
+        ImageView bg = (ImageView)findViewById(R.id.game_bg);
+        ImageView count1 = (ImageView)findViewById(R.id.count1);
+        ImageView count2 = (ImageView)findViewById(R.id.count2);
+        ImageView count3 = (ImageView)findViewById(R.id.count3);
+        ImageView count4 = (ImageView)findViewById(R.id.count4);
+
+
+        // Image Initialization
+        Glide.with(this).load(R.drawable.in_game_bg).into(bg);
+        Glide.with(this).load(R.drawable.ting).into(count1);
+        Glide.with(this).load(R.drawable.ting).into(count2);
+        Glide.with(this).load(R.drawable.tang).into(count3);
+        Glide.with(this).load(R.drawable.tang).into(count4);
+
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
+    }
+
+
+
+    public void onUpImgClicked(View v) {
+        // 애니메이션 테스트(지워도 상관 X)
+
+        ImageView count1 = (ImageView)findViewById(R.id.count1);
+        ImageView count2 = (ImageView)findViewById(R.id.count2);
+        ImageView count3 = (ImageView)findViewById(R.id.count3);
+        ImageView count4 = (ImageView)findViewById(R.id.count4);
+
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in);
+
+        count1.startAnimation(animation);
+        count2.startAnimation(animation);
+        count3.startAnimation(animation);
+        count4.startAnimation(animation);
+    }
+
+    public void onLeftImgClicked(View v) {
+
+    }
+
+    public void onRightImgClicked(View v) {
+
+    }
+
+
+
+
 
     public float speedCalculator(int speed) {
         return (float)((100-speed)/100);
@@ -142,37 +209,5 @@ public class GameActivity extends AppCompatActivity {
                 }
             }, initialTime +  (int)(DURATION * i * speed));
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
-
-        MainActivity.bgmManager.stop();
-        setSound();
-
-        BusProvider.getInstance().register(this);
-
-        ImageView bg = (ImageView)findViewById(R.id.game_bg);
-        ImageView count1 = (ImageView)findViewById(R.id.count1);
-        ImageView count2 = (ImageView)findViewById(R.id.count2);
-        ImageView count3 = (ImageView)findViewById(R.id.count3);
-        ImageView count4 = (ImageView)findViewById(R.id.count4);
-
-        // Image Initialization
-        Glide.with(this).load(R.drawable.in_game_bg).into(bg);
-        Glide.with(this).load(R.drawable.ting).into(count1);
-        Glide.with(this).load(R.drawable.ting).into(count2);
-        Glide.with(this).load(R.drawable.tang).into(count3);
-        Glide.with(this).load(R.drawable.tang).into(count4);
-
-    }
-    
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BusProvider.getInstance().unregister(this);
     }
 }

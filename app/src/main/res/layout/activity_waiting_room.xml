@@ -28,7 +28,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFF00">
+                android:background="#e74c3c">
             </ImageView>
             <ImageView
                 android:id="@+id/icon_1"
@@ -46,7 +46,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00FFFF">
+                android:background="#2ecc71">
             </ImageView>
             <ImageView
                 android:id="@+id/icon_2"
@@ -71,7 +71,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FF00FF">
+                android:background="#89C4F4">
             </ImageView>
             <ImageView
                 android:id="@+id/icon_3"
@@ -89,7 +89,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F0F0FF">
+                android:background="#F7CA18">
             </ImageView>
             <ImageView
                 android:id="@+id/icon_4"
