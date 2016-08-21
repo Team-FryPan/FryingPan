@@ -104,7 +104,7 @@ public class HttpRequestThread extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        System.out.println(s);
+        s=s.replace("<br>", "\n");
         httpResponse.processFinish(s);
     }
 }
