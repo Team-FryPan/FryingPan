@@ -11,8 +11,8 @@ public class HttpRequest {
 
     public HttpRequest() { }
 
-    private String userName;
-    private String password;
+    private String userName="";
+    private String password="";
 
     public HttpResponse httpResponse = null;
 

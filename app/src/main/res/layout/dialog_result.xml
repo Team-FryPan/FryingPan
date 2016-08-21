@@ -4,22 +4,80 @@
     android:layout_height="match_parent">
     <FrameLayout
         android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:background="#5dffe7">
+        android:layout_height="300dp">
         <ImageView
-            android:layout_width="240dp"
-            android:layout_height="240dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:background="@drawable/bg_result"
             android:layout_gravity="center"/>
 
-        <ListView
+        <TableLayout
             android:id="@+id/result_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="130dp"
             android:layout_gravity="center"
-            android:textFilterEnabled="false">
+            android:padding="10dp"
+            android:stretchColumns="*">
+            <TableRow>
+                <TextView android:text="등수"
+                    android:textColor="#ffffff" />
+                <TextView android:text="별명"
+                    android:textAlignment="textStart"
+                    android:textColor="#ffffff" />
+                <TextView android:text="점수"
+                    android:textAlignment="textEnd"
+                    android:textColor="#ffffff" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="1st"
+                    android:textColor="#ffffff" />
+                <TextView android:text="456"
+                    android:textAlignment="textStart"
+                    android:id="@+id/text_0_0"
+                    android:textColor="#ffffff" />
+                <TextView android:text="3535"
+                    android:textAlignment="textEnd"
+                    android:id="@+id/text_0_1"
+                    android:textColor="#ffffff" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="2nd"
+                    android:textColor="#ffffff" />
+                <TextView android:text="456"
+                    android:textAlignment="textStart"
+                    android:id="@+id/text_1_0"
+                    android:textColor="#ffffff" />
+                <TextView android:text="3535"
+                    android:textAlignment="textEnd"
+                    android:id="@+id/text_1_1"
+                    android:textColor="#ffffff" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="3rd"
+                    android:textColor="#ffffff" />
+                <TextView android:text="456"
+                    android:textAlignment="textStart"
+                    android:id="@+id/text_2_0"
+                    android:textColor="#ffffff" />
+                <TextView android:text="3535"
+                    android:textAlignment="textEnd"
+                    android:id="@+id/text_2_1"
+                    android:textColor="#ffffff" />
+            </TableRow>
+            <TableRow>
+                <TextView android:text="4th"
+                    android:textColor="#ffffff" />
+                <TextView android:text="456"
+                    android:textAlignment="textStart"
+                    android:id="@+id/text_3_0"
+                    android:textColor="#ffffff" />
+                <TextView android:text="3535"
+                    android:textAlignment="textEnd"
+                    android:id="@+id/text_3_1"
+                    android:textColor="#ffffff" />
+            </TableRow>
 
-        </ListView>
+        </TableLayout>
         <Button
             android:layout_width="100dp"
             android:layout_height="40dp"
