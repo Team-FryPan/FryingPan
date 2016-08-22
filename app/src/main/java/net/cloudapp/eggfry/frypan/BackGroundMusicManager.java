@@ -1,29 +1,45 @@
 package net.cloudapp.eggfry.frypan;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
- * Created by user on 2016-08-12.
+ * Created by user on 2016-08-22.
  */
 public class BackGroundMusicManager {
+    MediaPlayer mediaPlayer;
 
-    MediaPlayer mediaPlayer; // 음악 플레이어
-
-    public BackGroundMusicManager(Context context, int id) { // 음악 플레이어 생성
-        // 안드로이드 4.4에서 테스트 시 null 값 나옴
-        mediaPlayer = MediaPlayer.create(context, id);
-
-        mediaPlayer.setLooping(true);
+    public BackGroundMusicManager(final Context context, final int id) {
+        try {
+            final Timer timer = new Timer(); // 타이머를 이용한 지속적인 변수 할당(버그 수정)
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        mediaPlayer.setLooping(true);
+                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            public void onPrepared(MediaPlayer mp) {
+                                mp.start();
+                            }
+                        });
+                        timer.cancel();
+                    }
+                    mediaPlayer = MediaPlayer.create(context, id);
+                }
+            }, 0, 100);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void play() { // 음악 재생
-        mediaPlayer.start();
+    public void stop() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
     }
-
-    public void stop() { // 음악 정지
-        mediaPlayer.pause();
-    }
-
 }

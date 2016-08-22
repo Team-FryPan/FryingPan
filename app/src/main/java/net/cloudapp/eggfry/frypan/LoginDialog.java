@@ -3,6 +3,8 @@ package net.cloudapp.eggfry.frypan;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,7 @@ public class LoginDialog extends Dialog {
         lpWindow.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         lpWindow.dimAmount = 0.8f;
         getWindow().setAttributes(lpWindow);
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         setContentView(R.layout.dialog_login);
 

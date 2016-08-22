@@ -9,9 +9,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 
 public class GameActivity extends AppCompatActivity {
     private SoundManager soundManager;
@@ -24,7 +21,6 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        MainActivity.bgmManager.stop();
         setSound();
 
         BusProvider.getInstance().register(this);
