@@ -9,9 +9,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
 
 public class GameActivity extends AppCompatActivity {
     private SoundManager soundManager;
