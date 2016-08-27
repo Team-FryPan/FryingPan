@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
 
     public static final String VERSION = "0.6";
 
-    public static BackGroundMusicManager bgmManager;
+    private BackGroundMusicManager bgmManager;
     public static SoundManager soundManager;
 
     @Override
@@ -45,17 +44,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         }
 
         // 소리 세팅
-        bgmManager = new BackGroundMusicManager(this, R.raw.opening);
-        soundManager = new SoundManager(this);
         setSound();
-
-        Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable() { // 3초 뒤 BGM 재생
-            @Override
-            public void run() {
-                bgmManager.play();
-            }
-        }, 3000);
 
     }
 
