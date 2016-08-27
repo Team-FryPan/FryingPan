@@ -1,7 +1,7 @@
 package net.cloudapp.eggfry.frypan;
 
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -28,10 +27,12 @@ import java.util.HashMap;
 
 
 public class GameActivity extends AppCompatActivity {
+
     private SoundManager soundManager;
-    private static final int INITIALTIME = 3000;
     private static final int DURATION = 1336;
     private static final int DURATION_SMALL = 334;
+
+    private Handler handler;
 
     ImageView[] def_beats;                  // 방어 시 누를 버튼
     RelativeLayout defendContainer;
@@ -92,6 +93,8 @@ public class GameActivity extends AppCompatActivity {
         Glide.with(this).load(R.drawable.beat3).asBitmap().into(def_beats[2]);
         Glide.with(this).load(R.drawable.beat4).asBitmap().into(def_beats[3]);
 
+        BusProvider.getInstance().post(new PushEvent("GameStartButton"));
+
     }
 
 
@@ -101,22 +104,20 @@ public class GameActivity extends AppCompatActivity {
         BusProvider.getInstance().unregister(this);
     }
 
-
     /**
      * 공격
      */
     public void attack() {
-        // 서버에 공격 정보 전송
+        playDrumSound(); // 드럼 재생
 
     }
 
     /**
      * 공격 받을 시 방어
      * (서버에서 공격 신호를 받았을 때 실행)
-     * @param num 방어 횟수
      */
     public void defend(int num) {
-
+        playDrumSound();
     }
 
     /**
@@ -134,7 +135,7 @@ public class GameActivity extends AppCompatActivity {
      * 방어 실패
      */
     public void defendFailed() {
-
+        BusProvider.getInstance().post(new PushEvent("LoseButton"));
     }
 
 
@@ -164,6 +165,18 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void onFruitClicked(int fruitNum) { // 어떤 과일이 선택되었을 때
+        BusProvider.getInstance().post(new PushEvent("SelectButton " + fruitNum)); // 선택된 과일 보내기
+    }
+
+    public void onCountClicked(int countNum) { // 어떤 갯수가 선택되었을 때
+        BusProvider.getInstance().post(new PushEvent("NumberButton " + countNum)); // 선택된 과일 보내기
+    }
+
+    public void onDefendClicked(int num) { // num번째 defend 버튼이 클릭되었을 때
+        BusProvider.getInstance().post(new PushEvent("DefendButton " + SocketService.gameManager.getNickNum()+" "+num));
+    }
+
     public void setSound() {
         soundManager = new SoundManager(this);
 
@@ -186,41 +199,36 @@ public class GameActivity extends AppCompatActivity {
 
 
     public void initialPlaySound() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Start");
-            }
-        }, INITIALTIME);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 soundManager.playSound("start1");
-                System.out.println("1");
             }
-        }, INITIALTIME + DURATION);
+        }, 0);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 soundManager.playSound("start2");
-                System.out.println("2");
             }
-        }, INITIALTIME + DURATION * 2);
+        }, DURATION * 1);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 soundManager.playSound("start3");
-                System.out.println("3");
             }
-        }, INITIALTIME + DURATION * 3);
+        }, DURATION * 2);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 soundManager.playSound("start4");
-                System.out.println("4");
             }
-        }, INITIALTIME + DURATION * 4);
+        }, DURATION * 3);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                attack();
+            }
+        }, DURATION * 4);
     }
 
     // 숫자 -> 문자
@@ -246,49 +254,52 @@ public class GameActivity extends AppCompatActivity {
         return number_string;
     }
 
-    /**
-     *
-     * @param initialTime 초기 딜레이 시간
-     * @param speed 스피드(0부터 1까지의 값)
-     * @param fruit 과일 이름
-     * @param number 수행 갯수
-     */
-    public void playSound(int initialTime, float speed, final String fruit, int number) {
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+    public void playDrumSound() {
+        soundManager.playSound("drum");
+        soundManager.loadSound("drum");
+    }
+
+    /**
+     * 공격시 재생 소리(과일 선택했을 때) -- 먼저 실행
+     * 누를 때마다 소리남
+     * @param fruit 과일 이름
+     */
+    public void playAttackSound(String fruit) {
+        soundManager.playSound(fruit);
+        soundManager.loadSound(fruit);
+    }
+
+    /**
+     * 공격시 재생 소리(횟수 클릭했을 때) -- 나중에 실행
+     * 누를 때마다 소리남
+     * @param number
+     */
+    public void playAttackSound(int number) {
+
+        String number_string = numberToString(number);
+        soundManager.playSound(number_string);
+        soundManager.loadSound(number_string);
+
+        handler.postDelayed(new Runnable() { // Send 명령 보내기
             @Override
             public void run() {
-                soundManager.playSound(fruit);
-                soundManager.loadSound(fruit);
+                BusProvider.getInstance().post(new PushEvent("SendButton"));
             }
-        }, initialTime + (int)(DURATION_SMALL * 2 * speed));
-        final String number_string = numberToString(number);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                soundManager.playSound(number_string);
-                soundManager.loadSound(number_string);
-                System.out.println(number_string);
-            }
-        }, initialTime + (int)(DURATION_SMALL * 3 * speed));
-        for(int i=3-number;i<4;i++) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    soundManager.playSound(fruit);
-                    soundManager.loadSound(fruit);
-                }
-            }, initialTime +  (int)(DURATION_SMALL * (4+i) * speed));
-        }
-        for(int i=0;i<2;i++) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    soundManager.playSound("drum");
-                    soundManager.loadSound("drum");
-                }
-            }, initialTime +  (int)(DURATION * i * speed));
+        }, DURATION_SMALL);
+    }
+
+    /**
+     * 방어시 재생 소리(누를 때마다 소리남)
+     * @param fruit 과일 이름
+     * @param number 수행 번째(제로 베이스)
+     */
+    public void playDefendSound(String fruit, int number) {
+        soundManager.playSound(fruit);
+        soundManager.loadSound(fruit);
+
+        if(SocketService.gameManager.getIsMyTurn() && number == 3) {
+            attack();
         }
     }
 
@@ -297,17 +308,40 @@ public class GameActivity extends AppCompatActivity {
     public void FinishLoad(PushEvent mPushEvent) {
         String[] message = mPushEvent.getString().split(" ");
         switch (message[0]) {
-            case "Send":
-                Log.d("GameActivity", String.valueOf(SocketService.gameManager.getAttackCount()));
-                defend(SocketService.gameManager.getAttackCount());
+            case "GameStart":
+                initialPlaySound();
                 break;
+
+            case "Send": // 핑을 맞춰주기
+                if(SocketService.gameManager.getIsMyTurn()) { // 자기 턴이면
+                    defend(SocketService.gameManager.getAttackCount()); // 공격받은 횟수만큼 방어
+                } else { // 자기 턴이 아니면
+                    defend(4); // 4번 방어
+                }
+                break;
+
+            case "Select": // 공격 대상을 선택한다면(서버에서 받아옴)
+                playAttackSound(SocketService.gameManager.getArr_nickname()[SocketService.gameManager.getAttackTarget()]); // 사운드 재생
+                break;
+
+            case "Number": // 공격 횟수를 선택한다면(서버에서 받아옴)
+                playAttackSound(SocketService.gameManager.getAttackCount()); // 사운드 재생
+                break;
+
+            case "Defend":
+                playDefendSound(message[1], Integer.parseInt(message[2]));
+                break;
+
             case "Time":
                 break;
-        }
-        if(message[0].equals("Send")) {
 
-        } else if(message[0].equals("Time")) {
+            case "Report": // 점수를 보내줌
+                break;
 
+            case "Result": // 누군가가 졌을 때
+                Intent it = new Intent(this, ResultActivity.class);
+                startActivity(it);
+                break;
         }
     }
 }

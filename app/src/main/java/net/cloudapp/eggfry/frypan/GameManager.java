@@ -13,7 +13,8 @@ public class GameManager {
     private int userNum = -1;                                               // 유저의 고유번호(0번부터 999번)
     private int nickNum = -1;                                               // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
     private int attackCount = -1;                                           // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
-
+    private int attackTarget = -1;                                          // 공격당하는 대상
+    private boolean isMyTurn = false;                                      // 자신의 턴인지 체크
 
     private int[] arr_drawableId =
             {R.drawable.kiwi, R.drawable.lemon, R.drawable.apple, R.drawable.watermelon};
@@ -47,6 +48,18 @@ public class GameManager {
         return arr_drawableId;
     }
 
+    public boolean getIsMyTurn() {
+        return isMyTurn;
+    }
+
+    public String getMyNickName() {
+        return arr_nickname[userNum];
+    }
+
+    public int getAttackTarget() {
+        return attackTarget;
+    }
+
 
     // Setter
     public void setScore(int index, int score) {
@@ -67,6 +80,14 @@ public class GameManager {
 
     public String[] getArr_nickname() {
         return arr_nickname;
+    }
+
+    public void setIsMyTurn(boolean bool) {
+        isMyTurn = bool;
+    }
+
+    public void setAttackTarget(int target) {
+        attackTarget = target;
     }
 
     public void startTimer() {

@@ -131,14 +131,23 @@ public class MultiPlayActivity extends AppCompatActivity {
 
             } else if(messages[0].equals("Set")) { // 게임 시작
                 BusProvider.getInstance().post(new PushEvent("Set"));
-            } else if(messages[0].equals("Ready")) {
+            } else if(messages[0].equals("Ready")) { // 레디
                 BusProvider.getInstance().post(new PushEvent(message));
-            } else if(messages[0].equals("Cancel")) {
+            } else if(messages[0].equals("Cancel")) { // 취소 신호
                 BusProvider.getInstance().post(new PushEvent(message));
-            } else if(messages[0].equals("Send")) {
+            } else if(messages[0].equals("Select")) { // 공격 대상 핑 맞추기
+                BusProvider.getInstance().post(new PushEvent("Select"));
+            } else if(messages[0].equals("Number")) { // 공격 횟수 핑 맞추기
+                BusProvider.getInstance().post(new PushEvent("Number"));
+            } else if(messages[0].equals("Report")) { // 점수 보고
+                BusProvider.getInstance().post(new PushEvent(message));
+            } else if(messages[0].equals("Result")) { // 게임 종료
+                BusProvider.getInstance().post(new PushEvent("Result"));
+            } else if(messages[0].equals("Send")) { // Send 핑 맞춰주기
+                BusProvider.getInstance().post(new PushEvent("Send"));
+            } else if(messages[0].equals("Defend")) { // Defend 핑 맞추기
                 BusProvider.getInstance().post(new PushEvent(message));
             }
-
         }
     };
 
@@ -277,6 +286,7 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     @Subscribe
     public void FinishLoad(PushEvent mPushEvent) {
+        String[] array = mPushEvent.getString().split(" ");
         if(mPushEvent.getString().equals("Destroy")) {
             unbindService(mConnection);
             stopService(socketIntent);
@@ -286,6 +296,16 @@ public class MultiPlayActivity extends AppCompatActivity {
             mService.myServiceFunc("Cancel");
         } else if(mPushEvent.getString().equals("ReadyRequest")) {
             mService.myServiceFunc("ReadyRequest");
+        } else if(mPushEvent.getString().equals("LoseButton")) {
+            mService.myServiceFunc("Lose");
+        } else if(array[0].equals("SendButton")) {
+            mService.myServiceFunc(mPushEvent.getString());
+        } else if(array[0].equals("DefendButton")) {
+            mService.myServiceFunc(mPushEvent.getString());
+        } else if(array[0].equals("SelectButton")) {
+            mService.myServiceFunc(mPushEvent.getString());
+        } else if(array[0].equals("NumberButton")) {
+            mService.myServiceFunc(mPushEvent.getString());
         }
     }
 }

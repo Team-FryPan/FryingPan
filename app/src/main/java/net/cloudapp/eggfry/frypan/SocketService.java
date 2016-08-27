@@ -106,7 +106,8 @@ public class SocketService extends Service{
 
     // Activity로부터 메세지를 받음
     public void myServiceFunc(String message) {
-        switch (message) {
+        String[] messages = message.split(" ");
+        switch (messages[0]) {
             case "Cancel":  // Activity에서 중간에 Cancel을 눌렀을 때
                 mSocket.emit("fromClient", "Cancel");
                 break;
@@ -117,6 +118,30 @@ public class SocketService extends Service{
 
             case "ReadyRequest":
                 mSocket.emit("fromClient", "ReadyRequest");
+                break;
+
+            case "SendButton":
+                mSocket.emit("fromClient", "Send");
+                break;
+
+            case "LoseButton":
+                mSocket.emit("fromClient", "Lose");
+                break;
+
+            case "DefendButton":
+                mSocket.emit("fromClient", "Defend "+messages[1]);
+                break;
+
+            case "SelectButton":
+                mSocket.emit("fromClient", "Select "+messages[1]);
+                break;
+
+            case "NumberButton":
+                mSocket.emit("fromClient", "Number "+messages[1]);
+                break;
+
+            case "GameStart":
+                mSocket.emit("fromClient", "GameStart");
                 break;
 
         }
@@ -138,17 +163,14 @@ public class SocketService extends Service{
                 mCallback.recvData("Username "+username);
                 mCallback.recvData("Channel "+channel);
                 mCallback.recvData("Room Connected");
-
                 break;
 
             case "Ready" :  // 레디를 눌렀을 때
                 mCallback.recvData(response);
-
                 break;
 
             case "Cancel" : // Cancel을 눌렀을 때
                 mCallback.recvData(response);
-
                 break;
 
             case "Set" :    // 게임이 시작되었을 때 (자신의 정보를 모두 저장)
@@ -158,36 +180,61 @@ public class SocketService extends Service{
                     gameManager.setUserNum(Integer.parseInt(messages[3]));
                     mCallback.recvData("Set");
                 }
-                gameManager.startTimer();
 
+                break;
+
+            case "GameStart":
+                mCallback.recvData("GameStart");
+                if(gameManager.getNickNum() == 0) {
+                    gameManager.setIsMyTurn(true);
+                }
+                gameManager.startTimer();
+                break;
+
+            case "Send":
+                mCallback.recvData("Send");
+                break;
+
+            case "Defend":
+                mCallback.recvData(response);
+                break;
+
+            case "Select" : // 누가 누구에게 공격
+                gameManager.setAttackTarget(Integer.parseInt(messages[1]));
+                if(gameManager.getNickNum() == gameManager.getAttackTarget()) { // 자신이 공격당하면
+                    gameManager.setIsMyTurn(true);
+                } else { // 기본적으로
+                    gameManager.setIsMyTurn(false);
+                }
+                mCallback.recvData("Select");
+                break;
+
+            case "Number" : // 공격 횟수 지정
+                gameManager.setAttackCount(Integer.parseInt(messages[1]));
+                mCallback.recvData("Number");
                 break;
 
             case "Report" : // 점수를 보고
                 for(int i=1;i<5;i++) {
                     gameManager.setScore(i-1, Integer.parseInt(messages[i]));
+                    mCallback.recvData("Report");
                 }
                 break;
 
             case "Result" : // 게임이 끝났을 때 결과 보고(점수로 표현, 진 사람은 -1)
                 for(int i=0;i<4;i++) {
                     gameManager.setScore(i, Integer.parseInt(messages[i*2+2]));
-                    // Result 처리
+                    mCallback.recvData("Result");
                 }
                 break;
 
-            case "Send" : // 누가 누구에게 공격
-                if(gameManager.getNickNum() == Integer.parseInt(messages[2])) { // 자신이 공격당하면
-                    gameManager.setAttackCount(Integer.parseInt(messages[3])); // attackCount만큼 후라이팬 놀이 수행
-                    mCallback.recvData("Send");
-                } else { // 기본적으로
-                    gameManager.setAttackCount(4); // attackCount는 4
-                }
             case "Error" :
                 if(messages[1].equals("1001")) { // 서버 동접 수용 인원 다 참
                     mCallback.recvData("Server Full");
                 } else if(messages[1].equals("1002")) { // 방 인원 다 참
                     mCallback.recvData("Room Full");
                 }
+                break;
         }
     }
 

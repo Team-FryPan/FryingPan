@@ -7,7 +7,6 @@ import android.view.View;
 
 public class ResultActivity extends AppCompatActivity {
 
-
     public int getRank(int[] score, int nickNum) {
         int rank=1;
         for(int i=0;i<4;i++) {
