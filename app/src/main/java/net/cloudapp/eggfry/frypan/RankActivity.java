@@ -26,7 +26,7 @@ public class RankActivity extends AppCompatActivity implements HttpResponse{
         int finalScore = getIntent().getIntExtra("score", -1);
 
         ImageView bgView = (ImageView)findViewById(R.id.bg_rank);
-        Glide.with(this).load(R.drawable.bg_select).into(bgView);
+        Glide.with(this).load(R.drawable.bg_select).asBitmap().into(bgView);
 
 
 

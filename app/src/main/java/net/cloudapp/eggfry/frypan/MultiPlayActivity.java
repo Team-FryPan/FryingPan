@@ -36,7 +36,6 @@ public class MultiPlayActivity extends AppCompatActivity {
     private Handler handler = new Handler();
 
     private ArrayList<Integer> channelList = new ArrayList<>();
-    private ArrayAdapter<Integer> adapter;
 
     private ProgressDialog loadingDialog;
 
@@ -58,7 +57,6 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private SocketService.ICallback mCallback = new SocketService.ICallback() { // SocketService는 recvData 함수를 호출해서 Activity 작업 하기
         public void recvData(String message) {
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -98,7 +96,6 @@ public class MultiPlayActivity extends AppCompatActivity {
                 it.putExtra("channel", channel);
                 it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(it);
-
             } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
@@ -112,7 +109,6 @@ public class MultiPlayActivity extends AppCompatActivity {
                 alert.show();
                 unbindService(mConnection);
                 stopService(socketIntent);
-
             } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
                 loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
@@ -139,6 +135,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 BusProvider.getInstance().post(new PushEvent(message));
             } else if(messages[0].equals("Cancel")) {
                 BusProvider.getInstance().post(new PushEvent(message));
+            } else if(messages[0].equals("Send")) {
+                BusProvider.getInstance().post(new PushEvent(message));
             }
 
         }
@@ -158,14 +156,15 @@ public class MultiPlayActivity extends AppCompatActivity {
             channelList.add(i);
         }
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, channelList);
 
         BusProvider.getInstance().register(this);
 
     }
 
-
+    //
     // 버튼 처리
+    //
 
     public void onRandomBtnClicked(View v) {
 
@@ -236,7 +235,6 @@ public class MultiPlayActivity extends AppCompatActivity {
         builder.setNeutralButton("입장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-//                 선택한 채널(selectedChannel이 비었으면 접속, 4명 다 찼으면 Toast 띄워줌)
                 setSocketServiceConnection(
                         String.valueOf(numberPicker.getValue()));
             }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SquareLayout">
+        <!-- 기준을 높이로 설정 -->
+        <attr name="standardHeight" format="reference|boolean" />
+    </declare-styleable>
+</resources>

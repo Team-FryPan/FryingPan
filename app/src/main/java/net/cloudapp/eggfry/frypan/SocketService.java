@@ -1,6 +1,5 @@
 package net.cloudapp.eggfry.frypan;
 
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -108,8 +107,8 @@ public class SocketService extends Service{
     // Activity로부터 메세지를 받음
     public void myServiceFunc(String message) {
         switch (message) {
-            case "Cancel": // Activity에서 중간에 Cancel을 눌렀을 때
-                mSocket.emit("fromClient", "Cancel"); // SocketServer에 Cancel을 보냄
+            case "Cancel":  // Activity에서 중간에 Cancel을 눌렀을 때
+                mSocket.emit("fromClient", "Cancel");
                 break;
 
             case "Ready":
@@ -124,13 +123,15 @@ public class SocketService extends Service{
 
     }
 
-    public void proccessResponse(String response) { // SocketServer로부터 명령을 받음
-        if(response.equals("Server Connection")) { // Server와 연결되었을 때
+    // SocketServer로부터 명령을 받음
+    public void proccessResponse(String response) {
+        if(response.equals("Server Connection")) {  // Server와 연결되었을 때
             isConnected = true; // 연결됨
         }
+        //-- messages가 어떤 정보 담는지 설명 좀
         String[] messages = response.split(" ");
         switch (messages[0]) {
-            case "Login" : // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
+            case "Login" :  // 처음에 채널을 선택하거나 랜덤으로 방에 들어갔을 때
                 this.username = messages[1];
                 this.channel = messages[2];
 
@@ -140,7 +141,7 @@ public class SocketService extends Service{
 
                 break;
 
-            case "Ready" : // 레디를 눌렀을 때
+            case "Ready" :  // 레디를 눌렀을 때
                 mCallback.recvData(response);
 
                 break;
@@ -150,7 +151,7 @@ public class SocketService extends Service{
 
                 break;
 
-            case "Set" : // 게임이 시작되었을 때 (자신의 정보를 모두 저장)
+            case "Set" :    // 게임이 시작되었을 때 (자신의 정보를 모두 저장)
                 isStarted = true;
                 if(messages[1].equals(username)) {
                     gameManager.setNickNum(Integer.parseInt(messages[2]));
@@ -177,6 +178,7 @@ public class SocketService extends Service{
             case "Send" : // 누가 누구에게 공격
                 if(gameManager.getNickNum() == Integer.parseInt(messages[2])) { // 자신이 공격당하면
                     gameManager.setAttackCount(Integer.parseInt(messages[3])); // attackCount만큼 후라이팬 놀이 수행
+                    mCallback.recvData("Send");
                 } else { // 기본적으로
                     gameManager.setAttackCount(4); // attackCount는 4
                 }

@@ -9,15 +9,20 @@ import java.util.TimerTask;
 public class GameManager {
 
     private final String[] arr_nickname = {"키위", "레몬", "사과", "수박"};
-    private int[] score = new int[4]; // nickNum번째 score이 자신의 score
-    private int userNum = -1; // 유저의 고유번호(0번부터 999번)
-    private int nickNum = -1; // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
-    private int attackCount = -1; // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
+    private int[] score = new int[4];                                       // nickNum번째 score이 자신의 score
+    private int userNum = -1;                                               // 유저의 고유번호(0번부터 999번)
+    private int nickNum = -1;                                               // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
+    private int attackCount = -1;                                           // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
 
-    private Timer timer = new Timer(); // 타이머(60초마다 SpeedUp)
-    private int speedLevel = 1; // (speedLevel-1)*0.1+1을 계속 곱해줘서 스피드를 맞춤
-    private long timeCount=0; // 게임이 시작되면 timeCount를 100millis마다 작동
 
+    private int[] arr_drawableId =
+            {R.drawable.kiwi, R.drawable.lemon, R.drawable.apple, R.drawable.watermelon};
+
+    private Timer timer = new Timer();                                      // 타이머(60초마다 SpeedUp)
+    private int speedLevel = 1;                                             // (speedLevel-1)*0.1+1을 계속 곱해줘서 스피드를 맞춤
+    private long timeCount=0;                                               // 게임이 시작되면 timeCount를 100millis마다 작동
+
+    // Getter
     public int[] getScore() {
         return score;
     }
@@ -38,6 +43,12 @@ public class GameManager {
         return attackCount;
     }
 
+    public int[] getArr_drawableId() {
+        return arr_drawableId;
+    }
+
+
+    // Setter
     public void setScore(int index, int score) {
         this.score[index] = score;
     }
@@ -63,8 +74,8 @@ public class GameManager {
             @Override
             public void run() {
                 timeCount++;
-                if(timeCount%200==0) { // 20초마다
-                    speedLevel++;
+                if(timeCount%10 == 0) {
+                    BusProvider.getInstance().post(new PushEvent("Time " + timeCount/10));
                 }
             }
         };

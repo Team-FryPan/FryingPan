@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,7 +20,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waiting_room);
-
 
         // 툴바(액션바) 설정
         Intent recvIntent = getIntent();
@@ -50,6 +48,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
             }
         });
 
+        //-- 주석 좀 달아줘
         BusProvider.getInstance().register(this);
         BusProvider.getInstance().post(new PushEvent("ReadyRequest"));
 
@@ -58,6 +57,7 @@ public class WaitingRoomActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         BusProvider.getInstance().unregister(this);
         BusProvider.getInstance().post(new PushEvent("CancelButton"));
         BusProvider.getInstance().post(new PushEvent("Destroy"));
@@ -67,13 +67,14 @@ public class WaitingRoomActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home:         // back arrow
                 finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    //-- 주석 좀 달아줘
     @Subscribe
     public void FinishLoad(PushEvent mPushEvent) {
         final String[] messages = mPushEvent.getString().split(" ");
@@ -95,7 +96,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
                     });
                 }
             }).start();
-
         } else if(messages[0].equals("Cancel")) {
             new Thread(new Runnable() {
                 @Override
