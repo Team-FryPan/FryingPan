@@ -15,7 +15,7 @@ public class GameManager {
     private int attackTarget = -1;                                          // 공격당하는 대상
     private boolean isMyTurn = false;                                       // 자신의 턴인지 체크
 
-    private final String[] arr_nickname = {"사과", "수박", "키위", "레몬"};
+    private final String[] arr_nickname = {"apple", "watermelon", "kiwi", "lemon"};
     private int[] arr_drawableId =
             {R.drawable.apple, R.drawable.watermelon, R.drawable.kiwi, R.drawable.lemon};
 

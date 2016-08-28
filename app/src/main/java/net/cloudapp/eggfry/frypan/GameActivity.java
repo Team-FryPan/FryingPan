@@ -97,6 +97,7 @@ public class GameActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (TimeManager.timingNum == 3) {
                         int attackNum = attackNums.indexOfChild(v) + 1;     // 공격 대상
+                        Log.d("NumsClicked", "timingNum = " + String.valueOf(TimeManager.timingNum) + ", attackNum = " + attackNum);
                         Glide.with(GameActivity.this)                                               // countView 숫자로 변경
                                 .load(numImgIds[attackNum - 1]).asBitmap()
                                 .into(new SquareLayoutTarget(GameActivity.this, countViews[3]));
@@ -155,7 +156,7 @@ public class GameActivity extends AppCompatActivity {
             countViews[i].setAlpha((float) 0.5);
         }
 
-//        startTurn();
+        startTurn();
         playDrumSound(); // 드럼 재생
     }
 
@@ -378,26 +379,40 @@ public class GameActivity extends AppCompatActivity {
     public void startTurn() {
         TimeManager.timingNum = 0;
 
+        final Handler handler = new Handler();
+
         final Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                if (TimeManager.timingNum >= 4) {
+                if(TimeManager.timingNum < 4) {
+                    countViews[TimeManager.timingNum].setAlpha(1);
+                    Log.d("Timer", String.valueOf(TimeManager.timingNum));
+                    TimeManager.timingNum++;
+                    handler.postDelayed(this, 2000);
+                } else if (TimeManager.timingNum >= 4) {
+                    this.cancel();
                     timer.cancel();
+                    handler.removeCallbacks(this);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            attackContainer.setVisibility(View.GONE);
+                        }
+                    });
                     return;
                 }
-                countViews[TimeManager.timingNum++].setAlpha(1);
-                Log.d("Timer", String.valueOf(TimeManager.timingNum));
             }
         };
 
-        timer.schedule(task, 700, 700);
+        timer.schedule(task, 2000);
     }
 
     public void startTurn(final int num) {
         TimeManager.timingNum = 0;
         final Timer timer = new Timer();
 
+        final Handler handler = new Handler();
 
         TimerTask task = new TimerTask() {
             @Override
@@ -405,10 +420,10 @@ public class GameActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        countViews[TimeManager.timingNum].setAlpha(1);
-                        TimeManager.timingNum++;
-
-                        if (TimeManager.timingNum == 4) {
+                        if(TimeManager.timingNum < 4) {
+                            countViews[TimeManager.timingNum].setAlpha(1);
+                            TimeManager.timingNum++;
+                        } else {
                             attack();
                             timer.cancel();
                             return ;
@@ -421,6 +436,7 @@ public class GameActivity extends AppCompatActivity {
                         }
                     }
                 });
+                handler.postDelayed(this, 0);
             }
         };
 
@@ -430,7 +446,7 @@ public class GameActivity extends AppCompatActivity {
             defBeats.get(0).startAnimation(animations.get("beat_anim"));
         }
 
-        timer.schedule(task, 700, 700);
+        timer.schedule(task, 2000);
     }
 
 
@@ -584,6 +600,7 @@ public class GameActivity extends AppCompatActivity {
         Log.d("NickNum", message[0]);
         switch (message[0]) {
             case "GameStart":
+//                initialPlaySound();
                 Log.d("Socket", "NickNum : " + String.valueOf(SocketService.gameManager.getNickNum()));
                 if (SocketService.gameManager.getNickNum() == 0) {
                     runOnUiThread(new Runnable() {
@@ -593,23 +610,34 @@ public class GameActivity extends AppCompatActivity {
                         }
                     });
                 }
-                initialPlaySound();
                 break;
 
             case "Send": // 핑을 맞춰주기
                 if (SocketService.gameManager.getIsMyTurn()) { // 자기 턴이면
-                    defend(SocketService.gameManager.getAttackCount()); // 공격받은 횟수만큼 방어
-                } else { // 자기 턴이 아니면
-                    defend(0);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            defend(SocketService.gameManager.getAttackCount()); // 공격받은 횟수만큼 방어
+                        }
+                    });
                 }
                 break;
 
             case "Select": // 공격 대상을 선택한다면(서버에서 받아옴)
                 playAttackSound(SocketService.gameManager.getArr_nickname()[SocketService.gameManager.getAttackTarget()]); // 사운드 재생
-                break;
 
+                break;
             case "Number": // 공격 횟수를 선택한다면(서버에서 받아옴)
                 playAttackSound(SocketService.gameManager.getAttackCount()); // 사운드 재생
+                if(SocketService.gameManager.getAttackTarget()
+                        == SocketService.gameManager.getNickNum()) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            defend(SocketService.gameManager.getAttackCount());
+                        }
+                    });
+                }
                 break;
 
             case "Defend":

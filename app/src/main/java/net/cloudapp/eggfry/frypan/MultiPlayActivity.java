@@ -94,7 +94,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 stopService(socketIntent);
 
             } else if(message.equals("Room Connected")) { // 방에 연결
-                loadingDialog.dismiss();
+                if(loadingDialog != null)
+                    loadingDialog.dismiss();
                 Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
                 it.putExtra("username", username);
                 it.putExtra("channel", channel);
@@ -102,7 +103,8 @@ public class MultiPlayActivity extends AppCompatActivity {
 
                 startActivity(it);
             } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
-                loadingDialog.dismiss();
+                if(loadingDialog != null)
+                    loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -115,7 +117,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 unbindService(mConnection);
                 stopService(socketIntent);
             } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
-                loadingDialog.dismiss();
+                if(loadingDialog != null)
+                    loadingDialog.dismiss();
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -295,8 +298,6 @@ public class MultiPlayActivity extends AppCompatActivity {
     public void FinishLoad(PushEvent mPushEvent) {
         String[] array = mPushEvent.getString().split(" ");
         if(mPushEvent.getString().equals("Destroy")) {
-            unbindService(mConnection);
-            stopService(socketIntent);
         } else if(mPushEvent.getString().equals("ReadyButton")) {
             mService.myServiceFunc("Ready");
         } else if(mPushEvent.getString().equals("CancelButton")) {
