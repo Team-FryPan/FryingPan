@@ -76,11 +76,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         finish();
     }
 
-    public void onInGameBtnClicked(View v) {
-        Intent it = new Intent(this, GameActivity.class);
-        startActivity(it);
-    }
-
     public void setSound() {
         soundManager = new SoundManager(this);
         soundManager.loadSound("click", R.raw.buttonclicked);
