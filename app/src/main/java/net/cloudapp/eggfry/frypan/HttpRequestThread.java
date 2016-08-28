@@ -12,6 +12,9 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+//-- 요구 사항 및 수정 필요한 부분
+//-- Ctrl-F로 '//--' ㄱㄱ
+
 /**
  * Created by user on 2016-08-07.
  */

@@ -84,9 +84,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/apple"
-                            android:onClick="onUpImgClicked"
                             android:id="@+id/up_img" />
+                            <!--android:src="@drawable/apple"-->
                     </LinearLayout>
                     <LinearLayout
                         android:layout_columnWeight="1"
@@ -98,8 +97,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/lemon"
                             android:id="@+id/left_img" />
+                            <!--android:src="@drawable/lemon"-->
                     </LinearLayout>
                     <LinearLayout
                         android:layout_columnWeight="1"
@@ -111,8 +110,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/kiwi"
                             android:id="@+id/right_img" />
+                            <!--android:src="@drawable/kiwi"-->
                     </LinearLayout>
                     <LinearLayout
                         android:layout_columnWeight="1"
@@ -124,8 +123,8 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:src="@drawable/watermelon"
                             android:id="@+id/bottom_img" />
+                            <!--android:src="@drawable/watermelon"-->
                     </LinearLayout>
 
                 </GridLayout>
@@ -135,11 +134,13 @@
             <!-- Defend (방어 횟수 만큼 터치)  -->
             <RelativeLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
+                android:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.7"
                 android:background="@android:color/holo_red_dark"
+                android:onClick="onDefendLayoutClicked"
                 android:id="@+id/defend_container">
 
             </RelativeLayout>
@@ -151,43 +152,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:weightSum="2"
-                android:alpha="0.7"
+                android:alpha="0.8"
                 android:id="@+id/attack_container">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="#000000"
+                    android:id="@+id/attack_players"
                     android:baselineAligned="false">
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#00ff8c">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"/>
+                        android:background="#e74c3c"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
+                        <net.cloudapp.eggfry.frypan.SquareLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        </net.cloudapp.eggfry.frypan.SquareLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#456456">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"/>
+                        android:background="#2ecc71"
+                        android:gravity="center"
+                        android:paddingRight="10dp"
+                        android:paddingLeft="10dp">
+                        <net.cloudapp.eggfry.frypan.SquareLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        </net.cloudapp.eggfry.frypan.SquareLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#123123">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"/>
+                        android:background="#89C4F4"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp">
+                        <net.cloudapp.eggfry.frypan.SquareLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        </net.cloudapp.eggfry.frypan.SquareLayout>
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -196,46 +206,59 @@
                     android:layout_weight="1"
                     android:orientation="horizontal"
                     android:baselineAligned="false"
+                    android:id="@+id/attack_nums"
                     android:weightSum="4">
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#777777">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="#F7CA18"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1"/>
+                            android:src="@drawable/beat1"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#AAAAAA">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="#F7CA18"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1"/>
+                            android:src="@drawable/beat2"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#CCCCCC">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="#F7CA18"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1"/>
+                            android:src="@drawable/beat3"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="#EEEEEE">
-                        <TextView
-                            android:layout_width="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:background="#F7CA18"
+                        android:gravity="center">
+                        <ImageView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="1"/>
+                            android:src="@drawable/beat4"/>
                     </LinearLayout>
                 </LinearLayout>
 

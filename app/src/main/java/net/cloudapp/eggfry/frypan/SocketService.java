@@ -6,10 +6,14 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+//-- 요구 사항 및 수정 필요한 부분
+//-- Ctrl-F로 '//--' ㄱㄱ
 
 /**
  * Created by user on 2016-08-07.
@@ -140,7 +144,7 @@ public class SocketService extends Service{
                 mSocket.emit("fromClient", "Number "+messages[1]);
                 break;
 
-            case "GameStart":
+            case "GameStartButton":
                 mSocket.emit("fromClient", "GameStart");
                 break;
 
@@ -150,8 +154,18 @@ public class SocketService extends Service{
 
     // SocketServer로부터 명령을 받음
     public void proccessResponse(String response) {
+        System.out.println(response);
         if(response.equals("Server Connection")) {  // Server와 연결되었을 때
             isConnected = true; // 연결됨
+        } else if(response.equals("GameStart")) {
+            mCallback.recvData("GameStart");
+            if(gameManager.getNickNum() == 0) {
+                gameManager.setIsMyTurn(true);
+                Log.d("Socket", "GameStart");
+            }
+            gameManager.startTimer();
+        } else if(response.equals("Send")) {
+            mCallback.recvData("Send");
         }
         //-- messages가 어떤 정보 담는지 설명 좀
         String[] messages = response.split(" ");
@@ -179,6 +193,7 @@ public class SocketService extends Service{
                     gameManager.setNickNum(Integer.parseInt(messages[2]));
                     gameManager.setUserNum(Integer.parseInt(messages[3]));
                     mCallback.recvData("Set");
+                    Log.d("Socket", "Set");
                 }
 
                 break;
@@ -187,6 +202,7 @@ public class SocketService extends Service{
                 mCallback.recvData("GameStart");
                 if(gameManager.getNickNum() == 0) {
                     gameManager.setIsMyTurn(true);
+                    Log.d("Socket", "GameStart");
                 }
                 gameManager.startTimer();
                 break;

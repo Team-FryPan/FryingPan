@@ -14,6 +14,9 @@ import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
+//-- 요구 사항 및 수정 필요한 부분
+//-- Ctrl-F로 '//--' ㄱㄱ
+
 public class WaitingRoomActivity extends AppCompatActivity {
 
     @Override
@@ -24,15 +27,16 @@ public class WaitingRoomActivity extends AppCompatActivity {
         // 툴바(액션바) 설정
         Intent recvIntent = getIntent();
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolBar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(recvIntent.getIntExtra("channel", 0) + "번 채널");
         toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             Log.d("WaitingRoom", "액션바");
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(recvIntent.getIntExtra("channel", 0) + "번 채널");
         }
+
 
         // 준비 버튼
         ((ToggleButton)findViewById(R.id.ready_btn)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -48,10 +52,8 @@ public class WaitingRoomActivity extends AppCompatActivity {
             }
         });
 
-        //-- 주석 좀 달아줘
         BusProvider.getInstance().register(this);
         BusProvider.getInstance().post(new PushEvent("ReadyRequest"));
-
     }
 
     @Override
@@ -74,7 +76,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
     }
 
 
-    //-- 주석 좀 달아줘
     @Subscribe
     public void FinishLoad(PushEvent mPushEvent) {
         final String[] messages = mPushEvent.getString().split(" ");
@@ -82,7 +83,6 @@ public class WaitingRoomActivity extends AppCompatActivity {
             Intent it = new Intent(this, GameActivity.class);
             it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(it);
-            BusProvider.getInstance().unregister(this);
         } else if(messages[0].equals("Ready")) {
             new Thread(new Runnable() {
                 @Override

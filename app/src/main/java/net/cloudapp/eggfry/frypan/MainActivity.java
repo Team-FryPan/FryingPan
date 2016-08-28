@@ -76,11 +76,6 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
         finish();
     }
 
-    public void onInGameBtnClicked(View v) {
-        Intent it = new Intent(this, GameActivity.class);
-        startActivity(it);
-    }
-
     public void setSound() {
         soundManager = new SoundManager(this);
         soundManager.loadSound("click", R.raw.buttonclicked);
@@ -91,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements HttpResponse{
     public void showDevinfoDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);     // 여기서 this는 Activity의 this
         builder.setTitle("게임 정보")        // 제목 설정
-                .setMessage("버전 : "+VERSION+"\n총괄 : 이지호\n개발자 : 이지호\n개발자 : 신원준\n디자인 : 강지훈")        // 메세지 설정
+                .setMessage("버전 : "+VERSION+"\n총괄 : 이지호\n개발자 : 이지호\n개발자 : 신원준\n디자인 : 강지훈")              // 메세지 설정
                 .setCancelable(true)        // 뒤로 버튼 클릭시 취소 가능 설정
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     // 확인 버튼 클릭시 설정

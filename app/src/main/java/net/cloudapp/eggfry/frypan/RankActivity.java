@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+//-- 요구 사항 및 수정 필요한 부분
+//-- Ctrl-F로 '//--' ㄱㄱ
+
 public class RankActivity extends AppCompatActivity implements HttpResponse{
 
     public HttpResponse httpResponse;

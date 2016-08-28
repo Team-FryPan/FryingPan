@@ -8,19 +8,18 @@ import java.util.TimerTask;
  */
 public class GameManager {
 
-    private final String[] arr_nickname = {"키위", "레몬", "사과", "수박"};
     private int[] score = new int[4];                                       // nickNum번째 score이 자신의 score
     private int userNum = -1;                                               // 유저의 고유번호(0번부터 999번)
     private int nickNum = -1;                                               // arr_nickname에서 nickNum번째 nickname이 자신의 nickname
     private int attackCount = -1;                                           // 자신이 이 턴에 후라이팬놀이를 수행할 횟수
     private int attackTarget = -1;                                          // 공격당하는 대상
-    private boolean isMyTurn = false;                                      // 자신의 턴인지 체크
+    private boolean isMyTurn = false;                                       // 자신의 턴인지 체크
 
+    private final String[] arr_nickname = {"사과", "수박", "키위", "레몬"};
     private int[] arr_drawableId =
-            {R.drawable.kiwi, R.drawable.lemon, R.drawable.apple, R.drawable.watermelon};
+            {R.drawable.apple, R.drawable.watermelon, R.drawable.kiwi, R.drawable.lemon};
 
     private Timer timer = new Timer();                                      // 타이머(60초마다 SpeedUp)
-    private int speedLevel = 1;                                             // (speedLevel-1)*0.1+1을 계속 곱해줘서 스피드를 맞춤
     private long timeCount=0;                                               // 게임이 시작되면 timeCount를 100millis마다 작동
 
     // Getter
