@@ -147,6 +147,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 BusProvider.getInstance().post(new PushEvent("Send"));
             } else if(messages[0].equals("Defend")) { // Defend 핑 맞추기
                 BusProvider.getInstance().post(new PushEvent(message));
+            } else if(messages[0].equals("IndianReport")) { // 인디언밥 핑 맞추기
+                BusProvider.getInstance().post(new PushEvent(message));
             }
         }
     };
@@ -305,6 +307,8 @@ public class MultiPlayActivity extends AppCompatActivity {
         } else if(array[0].equals("SelectButton")) {
             mService.myServiceFunc(mPushEvent.getString());
         } else if(array[0].equals("NumberButton")) {
+            mService.myServiceFunc(mPushEvent.getString());
+        } else if(array[0].equals("IndianButton")) {
             mService.myServiceFunc(mPushEvent.getString());
         }
     }

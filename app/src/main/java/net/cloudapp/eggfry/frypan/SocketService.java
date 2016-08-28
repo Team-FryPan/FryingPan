@@ -129,7 +129,7 @@ public class SocketService extends Service{
                 break;
 
             case "DefendButton":
-                mSocket.emit("fromClient", "Defend "+messages[1]);
+                mSocket.emit("fromClient", "Defend "+messages[1]+" "+messages[2]);
                 break;
 
             case "SelectButton":
@@ -142,6 +142,10 @@ public class SocketService extends Service{
 
             case "GameStart":
                 mSocket.emit("fromClient", "GameStart");
+                break;
+
+            case "IndianButton":
+                mSocket.emit("fromClient", "Indian "+messages[1]);
                 break;
 
         }
@@ -216,16 +220,23 @@ public class SocketService extends Service{
 
             case "Report" : // 점수를 보고
                 for(int i=1;i<5;i++) {
-                    gameManager.setScore(i-1, Integer.parseInt(messages[i]));
-                    mCallback.recvData("Report");
+                    gameManager.setScore(i - 1, Integer.parseInt(messages[i]));
                 }
+                mCallback.recvData("Report");
                 break;
 
             case "Result" : // 게임이 끝났을 때 결과 보고(점수로 표현, 진 사람은 -1)
                 for(int i=0;i<4;i++) {
-                    gameManager.setScore(i, Integer.parseInt(messages[i*2+2]));
-                    mCallback.recvData("Result");
+                    gameManager.setScore(i, Integer.parseInt(messages[i * 2 + 2]));
                 }
+                mCallback.recvData("Result");
+                break;
+
+            case "IndianReport": // 인디언밥 끝났을 때 결과 보고(점수로 표현, 진 사람은 -1)
+                for(int i=0;i<4;i++) {
+                    gameManager.setScore(i, Integer.parseInt(messages[i * 2 + 2]));
+                }
+                mCallback.recvData("IndianReport");
                 break;
 
             case "Error" :

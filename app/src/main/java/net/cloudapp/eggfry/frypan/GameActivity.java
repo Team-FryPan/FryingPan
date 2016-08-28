@@ -312,6 +312,7 @@ public class GameActivity extends AppCompatActivity {
                 initialPlaySound();
                 break;
 
+
             case "Send": // 핑을 맞춰주기
                 if(SocketService.gameManager.getIsMyTurn()) { // 자기 턴이면
                     defend(SocketService.gameManager.getAttackCount()); // 공격받은 횟수만큼 방어

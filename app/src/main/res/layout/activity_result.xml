@@ -1,63 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="net.cloudapp.eggfry.frypan.ResultActivity"
-    android:background="@drawable/bg_select"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#fc3434"
+    android:id="@+id/result_layout">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fc3434">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"/>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true">
-        <TextView
+        android:layout_weight="3"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이름 : 이지호"
-            android:textSize="25dp"
-            android:id="@+id/text_username"
-            android:textAlignment="center"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="레이팅 : 500"
-            android:textSize="25dp"
-            android:id="@+id/text_rank"
-            android:textAlignment="center"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="랭크 : 3"
-            android:textSize="25dp"
-            android:id="@+id/text_rating"
-            android:textAlignment="center"
-            android:textColor="#ffffff" />
+            android:layout_height="wrap_content">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="인디언밥!"
+                android:textColor="#ffffff"
+                android:textSize="60dp"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="점수 : 30"
+                android:textSize="30dp"
+                android:id="@+id/text_score"
+                android:textColor="#ffffff"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5초"
+                android:textSize="30dp"
+                android:id="@+id/text_countdown"
+                android:textColor="#ffffff"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6"/>
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="80dp"
-        android:background="@drawable/btn_result"
-        android:id="@+id/button"
-        android:layout_gravity="center_horizontal|bottom"/>
+        android:layout_weight="8">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/back"/>
+    </LinearLayout>
+
 
 </LinearLayout>
+</FrameLayout>
