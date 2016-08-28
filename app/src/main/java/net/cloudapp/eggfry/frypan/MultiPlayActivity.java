@@ -23,6 +23,9 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
+//-- 요구 사항 및 수정 필요한 부분
+//-- Ctrl-F로 '//--' ㄱㄱ
+
 public class MultiPlayActivity extends AppCompatActivity {
     private static final int CHANNEL_NUM = 60;      // 채널 갯수
 
@@ -41,6 +44,7 @@ public class MultiPlayActivity extends AppCompatActivity {
 
     private SocketService mService;
     public static Intent socketIntent;
+
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) { // 서비스와 연결되었을 때
@@ -90,14 +94,19 @@ public class MultiPlayActivity extends AppCompatActivity {
                 stopService(socketIntent);
 
             } else if(message.equals("Room Connected")) { // 방에 연결
-                loadingDialog.dismiss();
+                if(loadingDialog != null ) {
+                    loadingDialog.dismiss();
+                }
                 Intent it = new Intent(MultiPlayActivity.this, WaitingRoomActivity.class);
                 it.putExtra("username", username);
                 it.putExtra("channel", channel);
                 it.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
                 startActivity(it);
             } else if(message.equals("Server Full")) { // 서버 동접 인원수 다 참
-                loadingDialog.dismiss();
+                if(loadingDialog != null ) {
+                    loadingDialog.dismiss();
+                }
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -110,7 +119,9 @@ public class MultiPlayActivity extends AppCompatActivity {
                 unbindService(mConnection);
                 stopService(socketIntent);
             } else if(message.equals("Room Full")) { // 같은 방에 들어갈 인원 다 참
-                loadingDialog.dismiss();
+                if(loadingDialog != null ) {
+                    loadingDialog.dismiss();
+                }
                 AlertDialog.Builder alert = new AlertDialog.Builder(MultiPlayActivity.this);
                 alert.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
@@ -147,8 +158,8 @@ public class MultiPlayActivity extends AppCompatActivity {
                 BusProvider.getInstance().post(new PushEvent("Send"));
             } else if(messages[0].equals("Defend")) { // Defend 핑 맞추기
                 BusProvider.getInstance().post(new PushEvent(message));
-            } else if(messages[0].equals("IndianReport")) { // 인디언밥 핑 맞추기
-                BusProvider.getInstance().post(new PushEvent(message));
+            } else if(messages[0].equals("GameStart")) {
+                BusProvider.getInstance().post(new PushEvent("GameStart"));
             }
         }
     };
@@ -246,6 +257,7 @@ public class MultiPlayActivity extends AppCompatActivity {
         builder.setNeutralButton("입장", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                System.out.println(numberPicker.getValue());
                 setSocketServiceConnection(
                         String.valueOf(numberPicker.getValue()));
             }
@@ -308,7 +320,7 @@ public class MultiPlayActivity extends AppCompatActivity {
             mService.myServiceFunc(mPushEvent.getString());
         } else if(array[0].equals("NumberButton")) {
             mService.myServiceFunc(mPushEvent.getString());
-        } else if(array[0].equals("IndianButton")) {
+        } else if(array[0].equals("GameStartButton")) {
             mService.myServiceFunc(mPushEvent.getString());
         }
     }
